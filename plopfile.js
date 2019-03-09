@@ -47,10 +47,6 @@ module.exports = function (plop) {
     	type: 'add',
 			path: './src/containers/{{properCase name}}/{{properCase name}}.scss',
 			templateFile: 'plop_templates/container/scss.hbs'
-    },{
-    	type: 'add',
-			path: './src/containers/{{properCase name}}/{{properCase name}}.css',
-			templateFile: 'plop_templates/container/scss.hbs'
     }]
 	});
 };

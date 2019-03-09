@@ -1,0 +1,37 @@
+import  React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './InputField.scss';
+import {Input} from 'reactstrap';
+
+const propTypes = {
+
+};
+
+const defaultProps = {
+
+};
+
+const InputField = props => {
+  const {
+    input,
+    label,
+    type,
+    meta: { touched, error } ,
+    onChange
+  } = props;
+
+  return(
+    <div className="InputField">
+      <label> {label} </label>
+      <div>
+        <Input {...input} type={type} placeholder={label} />
+        {touched && error && <span>{error}</span>}
+      </div>
+    </div>
+  )
+}
+
+InputField.propTypes = propTypes;
+InputField.defaultProps = defaultProps;
+
+export default InputField;

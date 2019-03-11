@@ -17,8 +17,6 @@ export default function (state = null, action){
       })
     }
     case CREATE_SUCCESSFUL: {
-      console.log("successful")
-      console.log(action.payload);
       return Object.assign({}, state, {
         createSuccess: true,
         id: action.payload

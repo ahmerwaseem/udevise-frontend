@@ -1,8 +1,7 @@
 import  React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import './Authenticate.scss'
 import Auth from '../../Auth/Auth';
-import Callback from '../../Callback/Callback';
+import Spinner from '../Spinner/Spinner';
 
 const requireAuth = (ComposedComponent) => {
   const auth = new Auth();
@@ -13,6 +12,7 @@ const requireAuth = (ComposedComponent) => {
 
   componentWillMount() {
     if (!auth.isAuthenticated()){
+      localStorage.setItem("preAuthPage",this.props.match.url)
      auth.login();
     }
   }
@@ -20,7 +20,7 @@ const requireAuth = (ComposedComponent) => {
     render(){
       return (
         <div>
-          {auth.isAuthenticated() ? <ComposedComponent {...this.props} /> : <Callback/> }
+          {auth.isAuthenticated() ? <ComposedComponent {...this.props} /> : <Spinner/> }
         </div>
       )
     }

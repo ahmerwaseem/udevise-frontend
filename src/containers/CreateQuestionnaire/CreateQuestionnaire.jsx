@@ -146,7 +146,6 @@ class CreateQuestionnaire extends Component{
   }
 
   toggle = () => {
-    console.log("toggle called")
     this.props.clear();
   }
 
@@ -155,7 +154,6 @@ class CreateQuestionnaire extends Component{
 
   render(){
     const { handleSubmit, pristine, reset, submitting, questionnaire, modal } = this.props;
-    console.log(questionnaire);
     return (
       <Container>
             <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>

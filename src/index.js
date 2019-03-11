@@ -11,44 +11,40 @@ import createSagaMiddleware from 'redux-saga'
 import rootSaga from './sagas/rootsaga';
 import CreateQuestionnaire from './containers/CreateQuestionnaire/CreateQuestionnaire';
 import requireAuth from './components/Authenticate/Authenticate';
-import Callback from './Callback/Callback';
-import Auth from './Auth/Auth';
-//import { requiresAuth } from './Auth/Auth';
+import Callback from './containers/Callback/Callback';
 import history from "./history";
 import AnswerQuestionnaire from './containers/AnswerQuestionnaire/AnswerQuestionnaire'
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { loadState, saveState } from './utils/localStorage';
+
+//const persistedState = loadState();
 
 const sagaMiddleWare = createSagaMiddleware();
 const store = createStore(
   reducers,
+//  persistedState,
   composeWithDevTools(
     applyMiddleware(sagaMiddleWare)
   )
 );
 
-const auth = new Auth();
-
-const handleAuthentication = (nextState, replace) => {
-  if (/access_token|id_token|error/.test(nextState.location.hash)) {
-    auth.handleAuthentication();
-  }
-}
-
 sagaMiddleWare.run(rootSaga);
+
+// store.subscribe(() => {
+//   saveState({
+//     user: store.getState().user
+//   });
+// });
 
 ReactDOM.render(
  <Provider store={store}>
   <Router history={history}>
     <div>
-    <Route exact path="/" component={App} />
-    <Route path="/create" component={requireAuth(CreateQuestionnaire)} />
-    <Route path="/answer/:id" component={AnswerQuestionnaire} />
-    <Route path="/secure/answer/:id" component={requireAuth(AnswerQuestionnaire)} />
-    {/* <Route exact path="/callback" component={Callback} /> */}
-    <Route exact path="/callback" render={(props) => {
-          handleAuthentication(props);
-          return <Callback {...props} /> 
-    }} />
+      <Route exact path="/" component={App} />
+      <Route path="/create" component={requireAuth(CreateQuestionnaire)} />
+      <Route path="/answer/:id" component={AnswerQuestionnaire} />
+      <Route path="/secure/answer/:id" component={requireAuth(AnswerQuestionnaire)} />
+      <Route exact path="/callback" component={Callback} />
     </div>
   </Router>
  </Provider>

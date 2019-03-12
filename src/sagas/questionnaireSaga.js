@@ -1,4 +1,5 @@
-import { createQuestionnaireFailure, createQuestionnairePending, createQuestionnaireSuccessful, CREATE_QUESTIONNAIRE } from "../actions/questionnaires";
+import { createQuestionnaireFailure, createQuestionnairePending, createQuestionnaireSuccessful, 
+  CREATE_QUESTIONNAIRE, GET_QUESTIONNAIRE, GET_QUESTIONNAIRE_TO_TAKE, getQuestionnaireToTakePending, getQuestionnaireToTakeSuccessful, getQuestionnaireToTakeFailure } from "../actions/questionnaires";
 import { takeEvery, call, put } from 'redux-saga/effects'
 import Axios from "axios";
 
@@ -20,6 +21,18 @@ function* createQuestionnaire(action) {
   }
 }
 
+function* getQuestionnaireToTake(action) {
+  try {
+    yield put (getQuestionnaireToTakePending());
+    let result = yield call(Axios.get,"/api/v1/questionnaire/"+action.payload,null, config);
+    yield put( getQuestionnaireToTakeSuccessful(result.data) );
+  } catch (e) {
+    console.log(e,"error");
+    yield put(getQuestionnaireToTakeFailure());
+  }
+}
+
 export default function* questionnaireSaga() {
   yield takeEvery(CREATE_QUESTIONNAIRE, createQuestionnaire);
+  yield takeEvery(GET_QUESTIONNAIRE_TO_TAKE, getQuestionnaireToTake)
 }

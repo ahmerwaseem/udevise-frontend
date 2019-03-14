@@ -29,9 +29,10 @@ export default function (state = null, action){
     }
 
     case GET_QUESTIONNAIRE_TO_TAKE_SUCCESSFUL: {
+      console.log(action.payload);
       return Object.assign({}, state, {
         getQuestionnaireToTakeSuccess: true,
-        questionnaireToTake: action.form
+        questionnaireToTake: action.payload
       })
     }
   
@@ -54,6 +55,6 @@ export default function (state = null, action){
     case CLEAR_CREATE_STATUS: {
       return null;
   }
-  default: return null;
+  default: return state;
   }
 }

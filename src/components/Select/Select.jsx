@@ -1,6 +1,8 @@
 import  React, { Component } from 'react';
 import { Input } from 'reactstrap';
 import './Select.scss'
+import uuid from "uuid";
+
 
 const Select = props => {
   const {
@@ -17,7 +19,7 @@ const Select = props => {
         <Input {...input} type="select">
         {selectValues.map((values, index)=>{
           return(
-          <option key={21+index} value={values.option ? values.option : values}>{values.value ? values.value : values}</option>
+          <option key={uuid.v4()} value={values.option ? values.option : values}>{values.value ? values.value : values}</option>
           )
         })}
 

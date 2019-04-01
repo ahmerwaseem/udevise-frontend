@@ -78,25 +78,28 @@ class CardItem extends Component{
           <a href={`${getHost()}/answer/${this.props.id}`}>Direct Link</a>
         </Button>
         <Button size="small" color="primary">
-          Learn More
+          Something else here...
         </Button>
-        <IconButton
-            className={classnames(classes.expand, {
-              [classes.expandOpen]: this.state.expanded,
-            })}
-            onClick={this.handleExpandClick}
-            aria-expanded={this.state.expanded}
-            aria-label="Show more"
+        {values && values.length > 0 && (
+          <IconButton
+          className={classnames(classes.expand, {
+            [classes.expandOpen]: this.state.expanded,
+          })}
+          onClick={this.handleExpandClick}
+          aria-expanded={this.state.expanded}
+          aria-label="Show more"
           >
             <ExpandMoreIcon />
           </IconButton>
+        )}
       </CardActions>
       <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <CardContent>
             {values && values.map((item,index)=>{
               return(
                 <div>
-                                  test1
+                  <br/>
+                  {`Response #${index+1}:`}
                   {item.answers.map((subItem,subIndex)=>{
                     return (<div>{`${subIndex+1}. ${subItem.answer}`}</div>)
                   })}

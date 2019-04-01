@@ -14,6 +14,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem } from 'reactstrap';
+import Auth from '../../Auth/Auth';
 
 
 class Header extends Component{
@@ -33,6 +34,7 @@ class Header extends Component{
 
 
     render() {
+      const auth = new Auth();
       return (
         <div>
           <Navbar color="faded" light expand="md">
@@ -58,7 +60,7 @@ class Header extends Component{
                           Create
                         </DropdownItem>
                         <DropdownItem divider />
-                        <DropdownItem>
+                        <DropdownItem onClick={()=>auth.logout()}>
                           Logout
                         </DropdownItem>
                       </DropdownMenu>

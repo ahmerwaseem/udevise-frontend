@@ -2,6 +2,7 @@ import  React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RadioButton.scss'
 import { FormControl, RadioGroup } from '@material-ui/core';
+import uuid from 'uuid';
 
 const propTypes = {
 
@@ -18,22 +19,20 @@ const RadioButton = props => {
     label,
     type,
     meta: { touched, error } ,
-    selectValues
+    selectValues,
+    itemName,
+    name
   } = props;
 
 
 
   return(
     <div className="radio">
-      <div>
-        <label>{label}</label>
-        
-        {selectValues.map((values, index)=>{
-          return(
-            <label><input {...input}  type="radio" value={values.option ? values.option : values} />{values.value ? values.value : values}</label>
-          )
-        })}
-          {touched && error && <span>{error}</span>}
+        <div>
+        <input
+          {...input}
+          type="radio"/>
+        <label>{props.children}</label>
       </div>
     </div>
   )

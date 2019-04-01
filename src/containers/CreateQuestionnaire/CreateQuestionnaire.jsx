@@ -165,12 +165,6 @@ class CreateQuestionnaire extends Component{
     super(props);
   }
 
-  componentWillMount(){
-    this.state = {
-      initial: { "title" : "Ass"}
-    }
-  }
-
   toggle = () => {
     this.props.clear();
   }

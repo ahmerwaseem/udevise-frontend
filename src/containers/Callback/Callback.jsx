@@ -3,7 +3,9 @@ import loading from './loading.svg';
 import history from '../../history';
 import { auth0_config } from '../../Auth/Auth';
 import Auth from '../../Auth/Auth';
-
+import { connect } from 'react-redux';
+import Spinner from '../../components/Spinner/Spinner';
+import { setUserSession } from '../../actions/user';
 
 class Callback extends Component {
 
@@ -28,6 +30,12 @@ class Callback extends Component {
     localStorage.setItem("token",authResult.accessToken);
     localStorage.setItem("expiresAt", expiresAt);
     localStorage.setItem("idToken", JSON.stringify(authResult.idTokenPayload));
+    let userInfo = {
+      token: authResult.accessToken,
+      expires: expiresAt,
+      idToken: authResult.idTokenPayload
+    }
+    this.props.setUser(userInfo);
     this.handleRedirect();
   }
 
@@ -43,26 +51,23 @@ class Callback extends Component {
   }
 
   render() {
-
-    const style = {
-      position: 'absolute',
-      display: 'flex',
-      justifyContent: 'center',
-      height: '100vh',
-      width: '100vw',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: 'white',
-    }
-
     return (
-      <div style={style}>
-        <img src={loading} alt="loading"/>
-      </div>
+      <Spinner/>
     );
   }
 }
 
-export default Callback;
+const mapStateToProps = (state) => {
+  return {
+    user : state.user,
+    ...state
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return({
+      setUser: (userInfo) => {dispatch(setUserSession(userInfo))},
+  })
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Callback);

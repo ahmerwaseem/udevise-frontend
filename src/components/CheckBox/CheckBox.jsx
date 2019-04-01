@@ -10,17 +10,28 @@ const defaultProps = {
 
 };
 
-class CheckBox extends Component{
-  constructor(props) {
-    super(props);
-  }
-  render(){
-    return (
-      <div className = "CheckBox"> 
-        CheckBox 
+const CheckBox = (props) => {
+
+  const {
+    input,
+    label,
+    meta: { touched, error },
+    selectValues 
+  } = props;
+
+  return(
+    <div className="CheckBox">
+      <div>
+        <label>{label}</label>
+        {selectValues.map((values, index)=>{
+          return(
+            <label><input {...input} type="checkbox" value={values.option ? values.option : values} />{values.value ? values.value : values}</label>
+          )
+        })}
+          {touched && error && <span>{error}</span>}
       </div>
-    )
-  }
+    </div>
+  )
 
 }
 

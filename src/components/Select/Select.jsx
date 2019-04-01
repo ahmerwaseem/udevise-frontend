@@ -12,12 +12,12 @@ const Select = props => {
 
   return(
     <div className="Select">
-      <label> {label} </label>
+      <label>{label} </label>
       <div>
         <Input {...input} type="select">
         {selectValues.map((values, index)=>{
           return(
-          <option key={index} value={values.option}>{values.value}</option>
+          <option key={21+index} value={values.option ? values.option : values}>{values.value ? values.value : values}</option>
           )
         })}
 

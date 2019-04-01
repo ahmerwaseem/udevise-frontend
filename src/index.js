@@ -6,7 +6,7 @@ import './index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reducers from './reducers';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from './sagas/rootsaga';
 import CreateQuestionnaire from './containers/CreateQuestionnaire/CreateQuestionnaire';
@@ -16,13 +16,15 @@ import history from "./history";
 import AnswerQuestionnaire from './containers/AnswerQuestionnaire/AnswerQuestionnaire'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { loadState, saveState } from './utils/localStorage';
+import Header from './components/Header/Header';
+import Dashboard from './containers/Dashboard/Dashboard';
 
-//const persistedState = loadState();
+const persistedState = loadState();
 
 const sagaMiddleWare = createSagaMiddleware();
 const store = createStore(
   reducers,
-//  persistedState,
+  persistedState,
   composeWithDevTools(
     applyMiddleware(sagaMiddleWare)
   )
@@ -30,21 +32,25 @@ const store = createStore(
 
 sagaMiddleWare.run(rootSaga);
 
-// store.subscribe(() => {
-//   saveState({
-//     user: store.getState().user
-//   });
-// });
+store.subscribe(() => {
+  saveState({
+    user: store.getState().user
+  });
+});
 
 ReactDOM.render(
  <Provider store={store}>
   <Router history={history}>
     <div>
+      <Header/>
+      <Switch>
       <Route exact path="/" component={App} />
       <Route path="/create" component={requireAuth(CreateQuestionnaire)} />
+      <Route path="/dashboard" component={requireAuth(Dashboard)} />
       <Route path="/answer/:id" component={AnswerQuestionnaire} />
       <Route path="/secure/answer/:id" component={requireAuth(AnswerQuestionnaire)} />
       <Route exact path="/callback" component={Callback} />
+      </Switch>
     </div>
   </Router>
  </Provider>

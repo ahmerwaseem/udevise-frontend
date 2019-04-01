@@ -1,19 +1,20 @@
 import { createQuestionnaireFailure, createQuestionnairePending, createQuestionnaireSuccessful, 
-  CREATE_QUESTIONNAIRE, GET_QUESTIONNAIRE, GET_QUESTIONNAIRE_TO_TAKE, getQuestionnaireToTakePending, getQuestionnaireToTakeSuccessful, getQuestionnaireToTakeFailure } from "../actions/questionnaires";
-import { takeEvery, call, put } from 'redux-saga/effects'
-import Axios from "axios";
+  CREATE_QUESTIONNAIRE, GET_QUESTIONNAIRE_TO_TAKE, getQuestionnairePending, 
+  getQuestionnaireSuccessful, getQuestionnaireFailure, 
+  submitResponsePending, submitResponseSuccessful, submitResponseFailure, SUBMIT_RESPONSE, 
+  GET_ALL_QUESTIONNAIRES, getAllQuestionnairesPending, getAllQuestionnairesSuccessful, getAllQuestionnairesFailure } from "../actions/questionnaires";
+import { takeEvery, call, put, select } from 'redux-saga/effects'
 
-let token = localStorage.getItem("token");
-let config = {
-  headers: {'Authorization': "bearer " + token}
-};
+import Axios from "axios";
+import { config, getToken } from "../utils/userUtils";
 
 
 function* createQuestionnaire(action) {
   const { questionnaire } = action;
   try {
+    const token = yield select(getToken);
     yield put (createQuestionnairePending());
-    let result = yield call(Axios.post,"/api/v1/questionnaire",questionnaire, config);
+    let result = yield call(Axios.post,"/api/v1/questionnaire",questionnaire, config(token));
     yield put( createQuestionnaireSuccessful(result.data.id) );
   } catch (e) {
     console.log(e,"error");
@@ -21,18 +22,51 @@ function* createQuestionnaire(action) {
   }
 }
 
-function* getQuestionnaireToTake(action) {
+function* getQuestionnaire(action) {
   try {
-    yield put (getQuestionnaireToTakePending());
-    let result = yield call(Axios.get,"/api/v1/questionnaire/"+action.payload,null, config);
-    yield put( getQuestionnaireToTakeSuccessful(result.data) );
+    const token = yield select(getToken);
+    yield put (getQuestionnairePending());
+    let result = yield call(Axios.get,"/api/v1/questionnaire/"+ action.payload,null, config(token));
+    console.log(result);
+    yield put( getQuestionnaireSuccessful(result.data));
   } catch (e) {
     console.log(e,"error");
-    yield put(getQuestionnaireToTakeFailure());
+    yield put(getQuestionnaireFailure());
   }
 }
 
+//will get all created questionnaires by user token provided in header
+function* getAllQuestionnaires() {
+  try {
+    const token = yield select(getToken);
+    yield put (getAllQuestionnairesPending());
+    let result = yield call(Axios.get,"/api/v1/questionnaire/all", config(token));
+    yield put( getAllQuestionnairesSuccessful(result.data));
+  } catch (e) {
+    console.log(e,"error");
+    yield put(getAllQuestionnairesFailure());
+  }
+}
+
+
+function* submitResponseForm(action) {
+  try {
+    yield put (submitResponsePending());
+    debugger;
+    const token = yield select(getToken);
+    let result = yield call(Axios.post,"/api/v1/answer",action.payload, config(token));
+    console.log(result);
+    yield put( submitResponseSuccessful(result.data));
+  } catch (e) {
+    console.log(e,"error");
+    yield put(submitResponseFailure());
+  }
+}
+
+
 export default function* questionnaireSaga() {
   yield takeEvery(CREATE_QUESTIONNAIRE, createQuestionnaire);
-  yield takeEvery(GET_QUESTIONNAIRE_TO_TAKE, getQuestionnaireToTake)
+  yield takeEvery(GET_QUESTIONNAIRE_TO_TAKE, getQuestionnaire);
+  yield takeEvery(GET_ALL_QUESTIONNAIRES, getAllQuestionnaires);
+  yield takeEvery(SUBMIT_RESPONSE, submitResponseForm);
 }

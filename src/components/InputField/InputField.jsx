@@ -17,18 +17,22 @@ const InputField = props => {
     label,
     type,
     meta: { touched, error } ,
-    onChange
+    selectValues,
+    hidden,
   } = props;
 
-  return(
+  if (hidden){
+    return null;
+  } else return(
     <div className="InputField">
       <label> {label} </label>
       <div>
-        <Input {...input} type={type} placeholder={label} />
+        <Input {...input} type={type} placeholder={label}  />
         {touched && error && <span>{error}</span>}
       </div>
     </div>
-  )
+    )
+
 }
 
 InputField.propTypes = propTypes;

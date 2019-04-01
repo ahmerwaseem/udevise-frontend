@@ -1,47 +1,98 @@
 import  React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import './AnswerQuestionnaire.scss';
-import { getQuestionnaireToTake } from '../../actions/questionnaires';
+import { reduxForm } from 'redux-form';
+import { getQuestionnaire, submitResponse } from '../../actions/questionnaires';
+import Spinner from '../../components/Spinner/Spinner';
+import { Field, change, registerField } from 'redux-form';
+import Select from '../../components/Select/Select';
+import RadioButton from '../../components/RadioButton/RadioButton';
+import CheckBox from '../../components/CheckBox/CheckBox';
+import { required } from '../../utils/validators';
+import InputField from "../../components/InputField/InputField";
+import TextArea from '../../components/TextArea/TextArea';
 
-const propTypes = {
 
-};
+const stringToComponentMapper = {
+  RADIO: RadioButton,
+  CHECKBOX: CheckBox,
+  TEXT: InputField,
+  SELECT: Select,
+  TEXTAREA: TextArea
+}
 
-const defaultProps = {
-
-};
+let hiddenFieldsInitialized = false;
+const formName = "ResponseForm";
 
 class AnswerQuestionnaire extends Component{
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount(){
-    this.props.getQuestionnaire(this.props.match.params.id)
+    this.props.getQuestionnaireById(this.props.match.params.id);
   }
 
+  componentWillUpdate(){
+    if (this.props.questionnaire && this.props.questionnaire.questionnaire && !hiddenFieldsInitialized){
+      const { questions, id } = this.props.questionnaire.questionnaire;
+
+      this.props.dispatch(registerField(formName,"questionnaireId",Field)) ;
+      this.props.dispatch(change(formName,"questionnaireId",id)) ;
+
+      questions.map((item, index)=>{
+        let key = `answers.[${index}].questionId`;
+          this.props.dispatch(registerField(formName,key,Field)) ;
+          this.props.dispatch(change(formName,key,item.id)) ;
+        })
+        hiddenFieldsInitialized = true;
+      }
+  }
+  
+
   render(){
-    return (
-      <div className = "AnswerQuestionnaire"> 
-        AnswerQuestionnaire {this.props.match.url}
-      </div>
-    )
+    console.log(this.props)
+    if (this.props.questionnaire && this.props.questionnaire.getQuestionnaireSuccess){
+      const { title, description, questions } = this.props.questionnaire.questionnaire;
+
+      return (
+        <div>
+          <form onSubmit={this.props.handleSubmit(this.props.submitResponse)}>
+          <div>
+          <h3>{title}</h3>
+          <h2>{description}</h2>
+          {questions.map((item, index)=>{
+            let fieldName = `answers.[${index}].answer`;
+              return(<div>
+              <Field key={index} validate={required} name={fieldName} component={stringToComponentMapper[item.type]} label={`${index+1}. ${item.question}`} selectValues={item.answersAllowed}/> 
+              </div>)
+            }
+          )}
+        </div>          
+          <button type="submit">Submit</button>
+          </form>
+        </div>
+        )
+      } else if (this.props.questionnaire && this.props.questionnaire.getQuestionnaireFailed){
+        return(<div>Error finding questionnaire</div>)
+      } else {
+        return (
+          <Spinner/>
+        )
+      }
   }
 
 }
 
-AnswerQuestionnaire.propTypes = propTypes;
-AnswerQuestionnaire.defaultProps = defaultProps;
-
 const mapStateToProps = (state) => {
   return {
-    ...state
+    ...state,
+    questionnaire : state.questionnaire
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getQuestionnaire: (id) => { dispatch(getQuestionnaireToTake(id))}
+  getQuestionnaireById: (id) => { dispatch(getQuestionnaire(id)) },
+  submitResponse: (formValues) => { dispatch(submitResponse(formValues))}
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(AnswerQuestionnaire);
+export default reduxForm({
+  form: formName,
+})(connect(mapStateToProps,mapDispatchToProps)(AnswerQuestionnaire));

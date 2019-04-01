@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import './CreateQuestionnaireForm.scss';
-import { createQuestionnaire } from '../../actions/questionnaires';
+import { createQuestionnaire, CLEAR_QUESTIONNAIRES } from '../../actions/questionnaires';
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
 import InputField from "../../components/InputField/InputField";
 import TextArea from "../../components/TextArea/TextArea";
@@ -12,9 +12,30 @@ import { CLEAR_CREATE_STATUS } from "../../actions/questionnaires";
 
 
 import { Container, Button, Form, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { getHost } from '../../utils/pathUtils';
 
 const selector = formValueSelector('CreateQuestionnaireForm')
-const defaultQuestion = { "question": "", "type": "TEXT_BOX"}
+const defaultQuestion = { "question": "", "type": "TEXT"}
+
+const sampleUpload = {
+  "questions": [
+    {
+      "question": "text sample question",
+      "type": "TEXT"
+    },
+    {
+      "answersAllowed": [
+        "answer1",
+        "answer2",
+        "answer3"
+      ],
+      "question": "select question sample",
+      "type": "SELECT"
+    }
+  ],
+  "title": "Upload Mock",
+  "description": "Description upload mock"
+}
 
 // const question = {
 //   "anonymous": true,
@@ -40,20 +61,28 @@ const defaultQuestion = { "question": "", "type": "TEXT_BOX"}
 // }
 
 const questionTypeValues = [
-  {"option" : "TEXT_BOX","value" : "Text box"},
-  {"option" : "MULTIPLE_CHOICE","value" : "Multiple Choice"},
-  {"option" : "CHECK_BOX","value" : "Checkbox"},
-  {"option" : "TRUE_FALSE","value" : "True or False"},  
+  {"option" : "TEXT","value" : "Short Answer"},
+  {"option" : "TEXTAREA","value" : "Long Answer"},
+  {"option" : "RADIO","value" : "Radio - Select One"},
+  {"option" : "SELECT","value" : "Select - Select One "},
 ];
+
+let test = {
+  "title": "string"
+}
+
 
 let Question = ({ question, index, fields, questionType, answersAllowed }) => (
   <div className="CreateQuestionnaireForm__question">
   <li key={index}>
+  {index!=0 && (
     <button
       type="button"
-      title="Remove Question"
       onClick={() => fields.remove(index)}
-    />
+    >
+    Remove Question
+    </button>
+    )}
     <Field
       name={`${question}.question`}
       type="text"
@@ -64,21 +93,12 @@ let Question = ({ question, index, fields, questionType, answersAllowed }) => (
 
     <Field name={`${question}.type`} component={Select} label="Question Type" selectValues={questionTypeValues}/> 
 
-    {questionType=="MULTIPLE_CHOICE" && (
+    {(questionType=="RADIO" || questionType=="SELECT") && (
       <div>text
       <FieldArray name={`${question}.answersAllowed`} component={renderAnswers} />
       </div>
     )}
 
-    {questionType=="CHECK_BOX" && (
-      <div>text
-      <FieldArray name={`${question}.answersAllowed`} component={renderAnswers} />
-      </div>
-    )}
-
-    {(()=>{
-      answersAllowed = null;
-    })()}
     
   </li>
   </div>
@@ -93,9 +113,10 @@ let renderAnswers = ({ fields }) => {
         <div className="CreateQuestionnaireForm__answer">
         <button
           type="button"
-          title="Remove Hobby"
           onClick={() => fields.remove(index)}
-        />
+        >
+        Remove Answer
+        </button>
         <Field
           name={answer}
           type="text"
@@ -122,7 +143,7 @@ let renderQuestions = ({ fields }) => {
       )}
 
       <li>
-        <Button color="secondary" onClick={() => fields.push({})}>Add Question</Button>
+        <Button color="secondary" onClick={() => fields.push(defaultQuestion)}>Add Question</Button>
       </li>
     </ul>
   )
@@ -139,10 +160,15 @@ Question = connect(
   }
 )(Question)
 
-
 class CreateQuestionnaire extends Component{
   constructor(props) {
     super(props);
+  }
+
+  componentWillMount(){
+    this.state = {
+      initial: { "title" : "Ass"}
+    }
   }
 
   toggle = () => {
@@ -151,21 +177,41 @@ class CreateQuestionnaire extends Component{
 
 
 
-
   render(){
+    console.log(this.props)
     const { handleSubmit, pristine, reset, submitting, questionnaire, modal } = this.props;
     return (
       <Container>
-            <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
-    <ModalHeader>Create Success</ModalHeader>
-    <ModalBody>
-      Here's your url: ...
-    </ModalBody>
-    <ModalFooter>
-      <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-      <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-    </ModalFooter>
-  </Modal>
+        {(()=>{
+          if (questionnaire && questionnaire.createSuccess){
+            return(
+              <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
+              <ModalHeader>Create Success</ModalHeader>
+              <ModalBody>
+                Here's where everyone can respond: {`${getHost()}/answer/${questionnaire.id}`}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
+                <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+              </ModalFooter>
+            </Modal>
+            )
+          }
+
+        })()}
+
+        <button onClick={()=>{
+          this.props.initialize(sampleUpload)
+        }}>
+          Upload Questionnaire
+          </button>
+
+        <button onClick={()=>{
+          this.props.initialize({})
+        }}>
+          Reset
+          </button>
+
         <Form className = "CreateQuestionnaireForm" onSubmit={handleSubmit(this.props.submit)}> 
           <div className = "CreateQuestionnaireForm__title">
             <Field
@@ -177,7 +223,7 @@ class CreateQuestionnaire extends Component{
             /> 
           </div>
 
-          <div className = "CreateQuestionnaireForm__beginTime">
+          {/* <div className = "CreateQuestionnaireForm__beginTime">
             <Field
               name="beginDateTime"
               type="datetime-local"
@@ -194,7 +240,7 @@ class CreateQuestionnaire extends Component{
               component={InputField} 
               label="End Date &amp; Time"
             /> 
-          </div>
+          </div> */}
 
           <div className = "CreateQuestionnaireForm__description">
             <Field
@@ -220,6 +266,7 @@ class CreateQuestionnaire extends Component{
 
 const mapStateToProps = (state) => {
   return {
+    initialValues : state.customInitialValues,
     questionnaire : state.questionnaire,
     ...state
   }
@@ -228,13 +275,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return({
       submit: (question) => {dispatch(createQuestionnaire(question))},
-      clear: () => {dispatch({type: CLEAR_CREATE_STATUS})}
+      clear: () => {dispatch({type: CLEAR_QUESTIONNAIRES})}
 
   })
 }
 
 export default reduxForm({
   form: 'CreateQuestionnaireForm',
-  initialValues: {
-  }
+  enableReinitialize: true, 
+  initialValues: {}
 })(connect(mapStateToProps,mapDispatchToProps)(CreateQuestionnaire));

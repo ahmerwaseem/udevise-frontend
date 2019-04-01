@@ -1,4 +1,4 @@
-import {STORE_PREAUTH_PAGE} from '../actions/user';
+import {STORE_PREAUTH_PAGE, SET_USER_SESSION} from '../actions/user';
 
 export default function (state = null, action) {
   switch(action.type){
@@ -7,6 +7,13 @@ export default function (state = null, action) {
         preAuthPage: action.payload 
       })
     }
-    default: return null;
+    case SET_USER_SESSION: {
+      return Object.assign({},state,{
+        userSession: action.payload 
+      })
+    }
+    default: return state;
   } 
+
+  
 }

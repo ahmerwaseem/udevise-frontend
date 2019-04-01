@@ -12,11 +12,31 @@ const defaultProps = {
 };
 
 const RadioButton = props => {
-  <FormControl>
-    <RadioGroup {...input} {...rest}>
-      {this.props.children}
-    </RadioGroup>
-  </FormControl>
+
+  const {
+    input,
+    label,
+    type,
+    meta: { touched, error } ,
+    selectValues
+  } = props;
+
+
+
+  return(
+    <div className="radio">
+      <div>
+        <label>{label}</label>
+        
+        {selectValues.map((values, index)=>{
+          return(
+            <label><input {...input}  type="radio" value={values.option ? values.option : values} />{values.value ? values.value : values}</label>
+          )
+        })}
+          {touched && error && <span>{error}</span>}
+      </div>
+    </div>
+  )
 }
 
 RadioButton.propTypes = propTypes;

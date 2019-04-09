@@ -15,14 +15,15 @@ const TextArea = props => {
   const {
     input,
     label,
-    meta: { touched, error } 
+    meta: { touched, error },
+    placeholder
   } = props;
 
   return(
     <div className="TextArea">
       <label> {label} </label>
       <div>
-        <Input type="textarea" {...input} placeholder={label} />
+        <Input type="textarea" {...input} placeholder={placeholder} />
         {touched && error && <span>{error}</span>}
       </div>
     </div>

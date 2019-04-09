@@ -12,7 +12,8 @@ import {
   GET_ALL_QUESTIONNAIRES_FAILURE,
   GET_ALL_QUESTIONNAIRES_PENDING,
   GET_ALL_QUESTIONNAIRES_SUCCESSFUL,
-  CLEAR_QUESTIONNAIRES
+  CLEAR_QUESTIONNAIRES,
+  CLEAR_SUBMIT_RESPONSE
  } from "../actions/questionnaires";
 
 export default function (state = null, action){
@@ -58,15 +59,23 @@ export default function (state = null, action){
       })
     }
     case CREATE_SUCCESSFUL: {
+      debugger;
       return Object.assign({}, state, {
+        ...state,
         createFailed: false,
         createPending: false,
         createSuccess: true,
-        id: action.payload
+        id: action.payload.id,
+        allQuestionnaires: [...state.allQuestionnaires, action.payload]
       })
     }
     case CLEAR_CREATE_STATUS: {
-      return null;
+      return Object.assign({}, state, {
+        ...state,
+        createFailed: false,
+        createPending: false,
+        createSuccess: false,
+      })
     }
 
     case SUBMIT_RESPONSE_PENDING: {
@@ -90,6 +99,14 @@ export default function (state = null, action){
         submitResponsePending: false,
         response: action.payload
       })
+    }
+      case CLEAR_SUBMIT_RESPONSE: {
+        return Object.assign({}, state, {
+          ...state,
+          submitResponseSuccess: true,
+          submitResponseFailure: false,
+          submitResponsePending: false,
+        })
 
       
     }

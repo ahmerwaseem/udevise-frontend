@@ -19,6 +19,8 @@ export const SUBMIT_RESPONSE = "SUBMIT_RESPONSE";
 export const SUBMIT_RESPONSE_PENDING = "SUBMIT_RESPONSE_PENDING";
 export const SUBMIT_RESPONSE_SUCCESSFUL = "SUBMIT_RESPONSE_SUCCESSFUL";
 export const SUBMIT_RESPONSE_FAILURE = "SUBMIT_RESPONSE_FAILURE";
+export const CLEAR_SUBMIT_RESPONSE = "CLEAR_SUBMIT_RESPONSE";
+
 
 export const CLEAR_QUESTIONNAIRES = "CLEAR_QUESTIONNAIRES";
 
@@ -36,10 +38,10 @@ export const createQuestionnairePending = () =>{
   }
 }
 
-export const createQuestionnaireSuccessful = (id) =>{
+export const createQuestionnaireSuccessful = (payload) =>{
   return {
       type: CREATE_SUCCESSFUL,
-      payload: id
+      payload: payload
   }
 }
 

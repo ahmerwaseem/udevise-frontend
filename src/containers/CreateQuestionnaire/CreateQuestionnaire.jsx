@@ -14,6 +14,11 @@ import { CLEAR_CREATE_STATUS } from "../../actions/questionnaires";
 import { Container, Button, Form, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { getHost } from '../../utils/pathUtils';
 
+
+const defaultProps = {
+  type: "survey"
+};
+
 const selector = formValueSelector('CreateQuestionnaireForm')
 const defaultQuestion = { "question": "", "type": "TEXT"}
 
@@ -76,12 +81,12 @@ let Question = ({ question, index, fields, questionType, answersAllowed }) => (
   <div className="CreateQuestionnaireForm__question">
   <li key={index}>
   {index!=0 && (
-    <button
+    <Button
       type="button"
       onClick={() => fields.remove(index)}
     >
     Remove Question
-    </button>
+    </Button>
     )}
     <Field
       name={`${question}.question`}
@@ -111,12 +116,12 @@ let renderAnswers = ({ fields }) => {
     {fields.map((answer,index) =>
       <li key={index}>
         <div className="CreateQuestionnaireForm__answer">
-        <button
+        <Button
           type="button"
           onClick={() => fields.remove(index)}
         >
         Remove Answer
-        </button>
+        </Button>
         <Field
           name={answer}
           type="text"
@@ -163,10 +168,13 @@ Question = connect(
 class CreateQuestionnaire extends Component{
   constructor(props) {
     super(props);
+    this.toggle=this.toggle.bind(this);
+
   }
 
   toggle = () => {
     this.props.clear();
+    this.props.initialize({});
   }
 
 
@@ -176,35 +184,33 @@ class CreateQuestionnaire extends Component{
     const { handleSubmit, pristine, reset, submitting, questionnaire, modal } = this.props;
     return (
       <Container>
-        {(()=>{
-          if (questionnaire && questionnaire.createSuccess){
-            return(
-              <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
+
+            <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
               <ModalHeader>Create Success</ModalHeader>
               <ModalBody>
                 Here's where everyone can respond: {`${getHost()}/answer/${questionnaire.id}`}
+                <div>Click OK to be redirected to your Dashboard</div>
+                <div>Click Cancel to create another {this.props.type}</div>
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
+                <Button color="primary" onClick={()=>{ this.props.clear(); this.props.history.push("/dashboard"); } }>OK</Button>{' '}
                 <Button color="secondary" onClick={this.toggle}>Cancel</Button>
               </ModalFooter>
             </Modal>
-            )
-          }
 
-        })()}
+        <h3>CREATE {this.props.type.toUpperCase()}</h3>
 
-        <button onClick={()=>{
+        <Button color="primary" onClick={()=>{
           this.props.initialize(sampleUpload)
         }}>
-          Upload Questionnaire
-          </button>
+          Upload Via JSON
+          </Button>
 
-        <button onClick={()=>{
+        <Button color="secondary" onClick={()=>{
           this.props.initialize({})
         }}>
           Reset
-          </button>
+          </Button>
 
         <Form className = "CreateQuestionnaireForm" onSubmit={handleSubmit(this.props.submit)}> 
           <div className = "CreateQuestionnaireForm__title">
@@ -269,13 +275,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return({
       submit: (question) => {dispatch(createQuestionnaire(question))},
-      clear: () => {dispatch({type: CLEAR_QUESTIONNAIRES})}
+      clear: () => {dispatch({type: CLEAR_CREATE_STATUS})}
 
   })
 }
+
+CreateQuestionnaire.defaultProps = defaultProps;
 
 export default reduxForm({
   form: 'CreateQuestionnaireForm',
   enableReinitialize: true, 
   initialValues: {}
 })(connect(mapStateToProps,mapDispatchToProps)(CreateQuestionnaire));
+

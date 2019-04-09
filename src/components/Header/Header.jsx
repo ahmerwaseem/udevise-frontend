@@ -15,6 +15,7 @@ import {
   DropdownMenu,
   DropdownItem } from 'reactstrap';
 import Auth from '../../Auth/Auth';
+import { Link } from 'react-router-dom'
 
 
 class Header extends Component{
@@ -37,7 +38,7 @@ class Header extends Component{
       const auth = new Auth();
       return (
         <div>
-          <Navbar color="faded" light expand="md">
+          <Navbar color="dark" dark expand="md">
             <NavbarBrand href="/">udevise</NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
@@ -53,12 +54,16 @@ class Header extends Component{
                           Menu
                       </DropdownToggle>
                       <DropdownMenu right>
-                        <DropdownItem href="/dashboard">
-                          Dashboard
-                        </DropdownItem>
-                        <DropdownItem href="/create">
-                          Create
-                        </DropdownItem>
+                        <Link to="/dashboard">
+                          <DropdownItem>
+                            Dashboard
+                          </DropdownItem>
+                        </Link>
+                        <Link to="/create">
+                          <DropdownItem>
+                            Create
+                          </DropdownItem>
+                        </Link>
                         <DropdownItem divider />
                         <DropdownItem onClick={()=>auth.logout()}>
                           Logout
@@ -72,7 +77,7 @@ class Header extends Component{
                   return(
                     <Nav className="ml-auto" navbar>
                     <NavItem>
-                      <NavLink onClick=''>Login</NavLink>
+                      <NavLink onClick={auth.login}>Login</NavLink>
                     </NavItem>
                     </Nav>
                   )

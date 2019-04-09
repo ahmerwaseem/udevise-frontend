@@ -19,6 +19,7 @@ const InputField = props => {
     meta: { touched, error } ,
     selectValues,
     hidden,
+    placeholder
   } = props;
 
   if (hidden){
@@ -27,7 +28,7 @@ const InputField = props => {
     <div className="InputField">
       <label> {label} </label>
       <div>
-        <Input {...input} type={type} placeholder={label}  />
+        <Input {...input} type={type} placeholder={placeholder}  />
         {touched && error && <span>{error}</span>}
       </div>
     </div>

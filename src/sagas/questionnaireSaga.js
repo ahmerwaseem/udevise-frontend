@@ -15,7 +15,7 @@ function* createQuestionnaire(action) {
     const token = yield select(getToken);
     yield put (createQuestionnairePending());
     let result = yield call(Axios.post,"/api/v1/questionnaire",questionnaire, config(token));
-    yield put( createQuestionnaireSuccessful(result.data.id) );
+    yield put( createQuestionnaireSuccessful(result.data) );
   } catch (e) {
     console.log(e,"error");
     yield put(createQuestionnaireFailure());
@@ -40,7 +40,7 @@ function* getAllQuestionnaires() {
   try {
     const token = yield select(getToken);
     yield put (getAllQuestionnairesPending());
-    let result = yield call(Axios.get,"/api/v1/questionnaire/all", config(token));
+    let result = yield call(Axios.get,"/api/v1/questionnaire", config(token));
     yield put( getAllQuestionnairesSuccessful(result.data));
   } catch (e) {
     console.log(e,"error");
@@ -52,9 +52,8 @@ function* getAllQuestionnaires() {
 function* submitResponseForm(action) {
   try {
     yield put (submitResponsePending());
-    debugger;
     const token = yield select(getToken);
-    let result = yield call(Axios.post,"/api/v1/answer",action.payload, config(token));
+    let result = yield call(Axios.post,"/api/v1/response",action.payload, config(token));
     console.log(result);
     yield put( submitResponseSuccessful(result.data));
   } catch (e) {

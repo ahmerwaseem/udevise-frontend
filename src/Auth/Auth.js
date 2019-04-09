@@ -27,6 +27,8 @@ export default class Auth {
     localStorage.removeItem('idToken');
     localStorage.removeItem('expiresAt');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+
     if (redirect){
       redirect(redirectUri);
     }
@@ -36,7 +38,7 @@ export default class Auth {
     if (redirectUri){
       history.replace(redirectUri);
     } else {
-      history.replace("/")
+      history.replace("/dashboard")
     }
   }
 

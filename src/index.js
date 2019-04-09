@@ -42,15 +42,15 @@ ReactDOM.render(
  <Provider store={store}>
   <Router history={history}>
     <div>
-      <Header/>
-      <Switch>
-      <Route exact path="/" component={App} />
-      <Route path="/create" component={requireAuth(CreateQuestionnaire)} />
-      <Route path="/dashboard" component={requireAuth(Dashboard)} />
-      <Route path="/answer/:id" component={AnswerQuestionnaire} />
-      <Route path="/secure/answer/:id" component={requireAuth(AnswerQuestionnaire)} />
-      <Route exact path="/callback" component={Callback} />
-      </Switch>
+        <Header/>
+        <Switch>
+          <Route exact path="/" component={App} />
+          <Route path="/create" component={requireAuth(CreateQuestionnaire)} />
+          <Route path="/dashboard" component={requireAuth(Dashboard)} />
+          <Route path="/answer/:id" component={AnswerQuestionnaire} />
+          <Route path="/secure/answer/:id" component={requireAuth(AnswerQuestionnaire)} />
+          <Route exact path="/callback" component={Callback} />
+        </Switch>
     </div>
   </Router>
  </Provider>

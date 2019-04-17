@@ -5,14 +5,16 @@ import { reduxForm } from 'redux-form';
 import { getQuestionnaire, submitResponse, CLEAR_SUBMIT_RESPONSE } from '../../actions/questionnaires';
 import Spinner from '../../components/Spinner/Spinner';
 import { Field, change, registerField } from 'redux-form';
-import Select from '../../components/Select/Select';
+import SelectField from '../../components/SelectField/SelectField';
 import RadioButton from '../../components/RadioButton/RadioButton';
 import CheckBox from '../../components/CheckBox/CheckBox';
 import { required } from '../../utils/validators';
 import InputField from "../../components/InputField/InputField";
 import TextArea from '../../components/TextArea/TextArea';
 import uuid from "uuid";
-import { Container, Button, Form, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Container, Form, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { FormLabel, Button, Typography } from '@material-ui/core';
+import { Redirect } from 'react-router-dom'
 
 
 
@@ -21,7 +23,7 @@ const stringToComponentMapper = {
   RADIO: RadioButton,
   CHECKBOX: CheckBox,
   TEXT: InputField,
-  SELECT: Select,
+  SELECT: SelectField,
   TEXTAREA: TextArea
 }
 
@@ -32,11 +34,13 @@ const formName = "ResponseForm";
 class AnswerQuestionnaire extends Component{
 
   componentWillMount(){
-    this.props.getQuestionnaireById(this.props.match.params.id);
+    this.props.getQuestionnaireById(this.props.match.params.id, this.props.type);
   }
 
   componentWillUpdate(){
-    if (this.props.questionnaire && this.props.questionnaire.questionnaire && !hiddenFieldsInitialized){
+    //hacky way of initializing hidden fields, only doing it here because its unclear when I would get
+    //results back from api call in componentWillMount, which i need to register these fields.
+    if (!hiddenFieldsInitialized && this.props.questionnaire && this.props.questionnaire.questionnaire){
       const { questions, id } = this.props.questionnaire.questionnaire;
 
       this.props.dispatch(registerField(formName,"questionnaireId",Field)) ;
@@ -54,20 +58,22 @@ class AnswerQuestionnaire extends Component{
 
   render(){
     console.log(this.props)
-    if (this.props.questionnaire && this.props.questionnaire.getQuestionnaireSuccess && this.props.questionnaire.questionnaire.questions){
+    if (this.props.questionnaire && this.props.questionnaire.submitResponseSuccess){
+      if (this.props.questionnaire.questionnaire.type == "QUIZ"){
+        return <Redirect to={`/response/${this.props.questionnaire.questionnaire.id}`} />
+      } else{
+      return (
+        <Typography>
+          Thank you for your response!
+          </Typography>
+      )
+      }
+    }
+    else if (this.props.questionnaire && this.props.questionnaire.getQuestionnaireSuccess && this.props.questionnaire.questionnaire.questions){
       const { title, description, questions } = this.props.questionnaire.questionnaire;
       return (
 
         <Container>
-            <Modal isOpen={this.props.questionnaire && this.props.questionnaire.submitResponseSuccess} toggle={()=>{this.props.clear()} } className={this.props.className}>
-              <ModalHeader>Submit Success</ModalHeader>
-              <ModalBody>
-                You've successful submitted your response. Please close this window or click OK to redirect to homepage.
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" onClick={()=>{ this.props.clear(); this.props.history.push("/"); } }>OK</Button>{' '}
-              </ModalFooter>
-            </Modal>
           <form onSubmit={this.props.handleSubmit(this.props.submitResponse)}>
           <div>
           <h2>{title}</h2>
@@ -79,28 +85,34 @@ class AnswerQuestionnaire extends Component{
             if (fieldType=="radio"){
               return(
                 <div>
-                <label>{`${index+1}.${item.question}`} 
+                <FormLabel component="legend">{item.question}</FormLabel>
                 {item.answersAllowed.map((values, index)=>{
                   return(
-                    <Field component={stringToComponentMapper[item.type]} type="radio" name={fieldName} value={values.option ? values.option : values}>{values.value ? values.value : values}</Field>
+                    <Field validate={required} component={stringToComponentMapper[item.type]} type="radio" name={fieldName} value={values.option ? values.option : values}>{values.value ? values.value : values}</Field>
                   )
                 })}
-                </label>
                 </div>
               )
             } else{
               return(<div>
-              <Field key={index} validate={required} name={fieldName} component={stringToComponentMapper[item.type]} label={`${index+1}. ${item.question}`} selectValues={item.answersAllowed}/> 
+              <Field key={index} validate={required} name={fieldName} component={stringToComponentMapper[item.type]} label={item.question} selectvalues={item.answersAllowed}/> 
               </div>)
             }
           })}
         </div>          
-          <Button color="primary" type="submit">Submit</Button>
+          <Button variant="contained" color="primary" type="submit">Submit</Button>
           </form>
           </Container>
           )
-      } else if ( this.props.questionnaire && ( this.props.questionnaire.getQuestionnaireFailed  ||  !this.props.questionnaire.questions ) ){
-        return(<div>Error finding questionnaire</div>)
+      } else if ( this.props.questionnaire && this.props.questionnaire.getQuestionnaireFailed ){
+        return(<div>
+          {this.props.questionnaire.getQuestionnaireFailed ?
+           <div> {this.props.questionnaire.getQuestionnaireFailed} </div> :
+            <div>
+              Error finding questionnaire
+            </div>
+          }
+          </div>)
       } else {
         return (
           <Spinner/>
@@ -118,7 +130,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getQuestionnaireById: (id) => { dispatch(getQuestionnaire(id)) },
+  getQuestionnaireById: (id,type) => { dispatch(getQuestionnaire(id,type)) },
   submitResponse: (formValues) => { dispatch(submitResponse(formValues))},
   clear: () => { dispatch({type: CLEAR_SUBMIT_RESPONSE})}
 })

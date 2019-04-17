@@ -8,7 +8,9 @@ export const auth0_config = new auth0.WebAuth({
   redirectUri: AUTH_CONFIG.callbackUrl,
   audience: AUTH_CONFIG.apiIdentifier,
   responseType: 'token id_token',
-  scope: 'openid profile email given_name family_name'
+  scope: 'openid profile email given_name family_name',
+  auto_login: false,
+  loginAfterSignup: false
 });
 
 export default class Auth {
@@ -23,15 +25,9 @@ export default class Auth {
     auth0_config.authorize();
   }
 
-  logout(redirect,redirectUri) {
-    localStorage.removeItem('idToken');
-    localStorage.removeItem('expiresAt');
-    localStorage.removeItem('token');
+  logout() {
     localStorage.removeItem('user');
-
-    if (redirect){
-      redirect(redirectUri);
-    }
+    this.redirect("/");
   }
 
   redirect(redirectUri){
@@ -43,8 +39,14 @@ export default class Auth {
   }
 
   isAuthenticated() {
-    let expiresAt = localStorage.getItem("expiresAt");
-    let isAuth = new Date().getTime() < expiresAt;
-    return isAuth;
+    let user = localStorage.getItem("user");
+    if (user){
+      user = JSON.parse(user);
+      let expiresAt = user.user.session.expires;
+      if (user && expiresAt){
+        return new Date().getTime() < expiresAt;
+      }
+    }
+    return false;
   }
 }

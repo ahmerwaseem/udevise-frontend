@@ -2,6 +2,7 @@ import  React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './TextArea.scss';
 import { Input } from 'reactstrap';
+import InputField from '../InputField/InputField';
 
 const propTypes = {
 
@@ -20,13 +21,10 @@ const TextArea = props => {
   } = props;
 
   return(
-    <div className="TextArea">
-      <label> {label} </label>
-      <div>
-        <Input type="textarea" {...input} placeholder={placeholder} />
-        {touched && error && <span>{error}</span>}
-      </div>
-    </div>
+    <InputField {...props}   
+    multiline={true}
+    rows={5}
+    rowsMax={5}/>
   )
 }
 

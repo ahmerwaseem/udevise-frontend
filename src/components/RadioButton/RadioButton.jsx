@@ -1,8 +1,9 @@
 import  React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RadioButton.scss'
-import { FormControl, RadioGroup } from '@material-ui/core';
+import { FormControl, RadioGroup, Radio } from '@material-ui/core';
 import uuid from 'uuid';
+import { Input } from 'reactstrap'
 
 const propTypes = {
 
@@ -19,7 +20,6 @@ const RadioButton = props => {
     label,
     type,
     meta: { touched, error } ,
-    selectValues,
     itemName,
     name
   } = props;
@@ -28,12 +28,10 @@ const RadioButton = props => {
 
   return(
     <div className="radio">
-        <div>
-        <input
+        <Radio
           {...input}
           type="radio"/>
         <label>{props.children}</label>
-      </div>
     </div>
   )
 }

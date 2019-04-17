@@ -2,18 +2,38 @@ import  React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import './Dashboard.scss';
-import { getQuestionnaire, getAllQuestionnaires } from '../../actions/questionnaires';
+import { getAllQuestionnaires } from '../../actions/questionnaires';
+import { getUserSubmitted } from '../../actions/user';
 import Spinner from '../../components/Spinner/Spinner';
-import CardItem from '../../components/Card/Card';
-import { Container, Row, Col} from 'reactstrap';
+import { Container, Row, Col, Badge} from 'reactstrap';
 import { getHost } from '../../utils/pathUtils';
-import Button from "reactstrap/es/Button";
+// import Button from "reactstrap/es/Button";
 import { AddCircle } from "@material-ui/icons"
-import {Divider} from "@material-ui/core";
+import {Divider, Button, Typography} from "@material-ui/core";
 import {Switch, Route, Link} from "react-router-dom";
 import QuestionnaireDetails from '../../components/QuestionnaireDetails/QuestionnaireDetails';
 import CreateQuestionnaire from '../CreateQuestionnaire/CreateQuestionnaire';
+import Fab from '@material-ui/core/Fab';
 
+
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import uuid from 'uuid';
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: '#0F8CE0',
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 class Dashboard extends Component{
   constructor(props) {
@@ -22,53 +42,26 @@ class Dashboard extends Component{
 
   componentWillMount(){
     this.props.getQuestionnaireForUser();
+    this.props.getUserSubmissions();
   }
 
   render(){
+
     if (this.props.questionnaires && this.props.questionnaires.allQuestionnaires ){
 
-      const {allQuestionnaires} = this.props.questionnaires;
-      console.log(allQuestionnaires);
+      const {allQuestionnaires,} = this.props.questionnaires;
       return(
-          <div className = "Dashboard">
-              <Row>
-                <Col md={4} className="SideNav">
-
-                  <ul>
-                    Surveys
-                    < Link to='/dashboard/createsurvey'>
-                        <li><AddCircle/>New</li>
-                    </Link>
-                  
+      <div className = "Dashboard"> 
+        <h4>Your Creations</h4>
+        {createTableForQuestionnaires(allQuestionnaires,"SURVEY")}
+        {createTableForQuestionnaires(allQuestionnaires,"QUIZ")}
+        <h4>Quizzes Taken</h4>
+        {this.props.user && 
+          getUserSubmissions(this.props.user.submissions)
+        }
 
 
-                  {mapQuestionnaires(allQuestionnaires)}
-                  </ul>
-
-                  <Divider/>
-                  <ul>
-                    Tests
-                    < Link to='/dashboard/createtest'>
-                        <li><AddCircle/>New</li>
-                    </Link>
-
-                  </ul>
-
-                </Col>
-                <Col className="Main">
-                    <Switch>
-                      <Route exact path="/dashboard"   render={(props) => 
-                        <div>
-                          Some content here
-                        </div>
-                        }/>                      
-                        <Route exact path="/dashboard/detail/:id" component={QuestionnaireDetails}/>
-                        <Route exact path="/dashboard/createsurvey"   render={(props) => <CreateQuestionnaire {...props} type={"survey"} /> } />
-                        <Route exact path="/dashboard/createtest"  render={(props) => <CreateQuestionnaire {...props} type={"test"} /> } />
-                    </Switch>
-                </Col>
-              </Row>
-          </div>
+      </div>
       )
     } else{
       return (
@@ -81,18 +74,94 @@ class Dashboard extends Component{
 
 }
 
+const getUserSubmissions = (data) =>{
+  if (data){
+    console.log(data);
+      return(
+        <div>
+        <Paper>
+      <Table>
+        <TableHead color="primary">
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell align="right">Date Completed</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {data.map((value)=>{
+            return (
+                <TableRow>
+                <TableCell component="th" scope="row">
+                <Link to={`response/${value.questionnaireId}`}>
+                {value.questionnaireTitle}
+                </Link>
+                </TableCell>
+                <TableCell align="right">{value.timeCompleted}</TableCell>
+              </TableRow>
+
+            )
+          })
+        }
+        </TableBody>
+      </Table>
+    </Paper>
+    </div>
+      )
+  }
+}
+
+const createTableForQuestionnaires = (data, type) => (
+  <div>
+    <div className="tableHeader">
+    <Typography  className="tableTitle" variant="h6" color="primary">
+          {type}
+    </Typography>
+    < Link to={`create/${type.toLowerCase()}`}>
+      <Fab className="tableButton" variant="extended" color="primary" aria-label="Add">
+        <AddCircle/> New
+      </Fab>
+    </Link>
+  </div>       
+  <Paper>
+  <Table>
+  <TableHead>
+    <TableRow>
+      <CustomTableCell style={{width: '50%'}}>Title</CustomTableCell>
+      <CustomTableCell align="right">Created (UTC)</CustomTableCell>
+      <CustomTableCell align="right"># Responses</CustomTableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    {mapQuestionnaires(data,type)}
+  </TableBody>
+  </Table>
+  </Paper>
+  </div>
+)
+
 const mapQuestionnaires = (data, type) => {
-  console.log(data);
-  return data.map((value, index)=>{
+  data = data.filter(x=>x.type == type);
+  if (data == undefined || data == null ||  typeof data !== "object" || data.length <= 0 ){
     return (
-        <li>
-          < Link to={{
-            pathname: `/dashboard/detail/${value.id}`,
-            state: {
-              questionnaire: {value}
-            }
-          }}> {value.title} </Link>
-        </li>
+      <TableRow key={uuid.v4()}>
+        <CustomTableCell  style={{width: '50%'}} component="th" scope="row">
+          {`CLICK NEW TO CREATE YOUR FIRST ${type}!`}
+        </CustomTableCell>
+      </TableRow>
+    )
+  }
+
+  return data.map((value)=>{
+    return (
+        <TableRow key={uuid.v4()}>
+        <CustomTableCell  style={{width: '50%'}} component="th" scope="row">
+        <Link to={`/detail/${value.id}`}>
+          {value.title}
+        </Link>
+        </CustomTableCell>
+        <CustomTableCell align="right">{value.createTime}</CustomTableCell>
+        <CustomTableCell align="right">{value.responses ? value.responses.length : 0}</CustomTableCell>
+      </TableRow>
     )
   })
 }
@@ -101,12 +170,14 @@ const mapStateToProps = (state) => {
   return {
     ...state,
     questionnaires: state.questionnaire
+
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return ({
-    getQuestionnaireForUser: () => dispatch(getAllQuestionnaires())
+    getQuestionnaireForUser: () => dispatch(getAllQuestionnaires()),
+    getUserSubmissions : () => dispatch(getUserSubmitted())
   })
 }
 

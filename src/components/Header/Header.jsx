@@ -12,7 +12,7 @@ import {
   NavLink,
   UncontrolledDropdown,
   DropdownToggle,
-  DropdownMenu,
+  DropdownMenu, 
   DropdownItem } from 'reactstrap';
 import Auth from '../../Auth/Auth';
 import { Link } from 'react-router-dom'
@@ -37,13 +37,15 @@ class Header extends Component{
     render() {
       const auth = new Auth();
       return (
-        <div>
-          <Navbar color="dark" dark expand="md">
+        <div className="Header">
+          <Navbar color="light" light expand="md">
             <NavbarBrand href="/">udevise</NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
-                {(()=>{if (this.props.user){
-                  const {name} = this.props.user.userSession.idToken;
+                {(()=>{
+                  console.log(this.props.user);
+                  if (this.props.user && this.props.user.session){
+                  const {name} = this.props.user.session.idToken;
                   return(
                     <Nav className="ml-auto" navbar>
                     <NavItem>

@@ -2,7 +2,6 @@ import  React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QuestionnaireDetails.scss'
 import Spinner from '../Spinner/Spinner';
-import Card from '../Card/Card';
 import { Alert, Table } from 'reactstrap';
 import { getHost } from '../../utils/pathUtils';
 
@@ -74,7 +73,6 @@ const processAnswers= (data) => {
 
 const countAnswers = (data) => {
   let obj = {};
-  debugger;
   if (data){
     data.map((value)=>{
       if (value){

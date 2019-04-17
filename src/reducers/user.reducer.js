@@ -1,4 +1,11 @@
-import {STORE_PREAUTH_PAGE, SET_USER_SESSION} from '../actions/user';
+import {
+  STORE_PREAUTH_PAGE, 
+  SET_USER_SESSION,
+  GET_USER_SUBMITTED_FAILURE,
+  GET_USER_SUBMITTED_PENDING,
+  GET_USER_SUBMITTED_SUCCESS
+
+} from '../actions/user';
 
 export default function (state = null, action) {
   switch(action.type){
@@ -8,10 +15,31 @@ export default function (state = null, action) {
       })
     }
     case SET_USER_SESSION: {
-      return Object.assign({},state,{
-        userSession: action.payload 
+      return Object.assign({},state,action.payload )
+    }
+    case GET_USER_SUBMITTED_PENDING: {
+      return Object.assign({},state, {
+        fetchSubmissionPending: true,
+        fetchSubmissionSuccess: false,
+        fetchSubmissionFailure: false,
       })
     }
+    case GET_USER_SUBMITTED_SUCCESS: {
+      return Object.assign({},state,{
+        fetchSubmissionPending: false,
+        fetchSubmissionSuccess: true,
+        fetchSubmissionFailure: false,
+        submissions : action.payload
+      })
+    }
+    case GET_USER_SUBMITTED_FAILURE: {
+      return Object.assign({},state,{
+        fetchSubmissionPending: false,
+        fetchSubmissionSuccess: false,
+        fetchSubmissionFailure: true,
+      })
+    }
+
     default: return state;
   } 
 

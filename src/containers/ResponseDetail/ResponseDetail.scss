@@ -1,0 +1,14 @@
+
+.ResponseDetail {
+
+  .answer--incorrect{
+    text-decoration: line-through;
+    color: red;
+  }
+
+  .answer--correct{
+    color: green;
+    fill: green
+  }
+
+}

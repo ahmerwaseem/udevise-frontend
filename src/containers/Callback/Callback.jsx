@@ -6,6 +6,7 @@ import Auth from '../../Auth/Auth';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import { setUserSession } from '../../actions/user';
+import { ERROR_OCCURRED } from '../../actions/questionnaires'; 
 
 class Callback extends Component {
 
@@ -15,27 +16,34 @@ class Callback extends Component {
 
   handleAuthentication() {
     auth0_config.parseHash((err, authResult) => {
+      console.log(err);
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
       } else if (err) {
-        history.replace('/');
-        console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+        this.props.setError(err.errorDescription)
       }
     });
   }
 
   setSession(authResult) {
     let expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
-    localStorage.setItem("token",authResult.accessToken);
-    localStorage.setItem("expiresAt", expiresAt);
-    localStorage.setItem("idToken", JSON.stringify(authResult.idTokenPayload));
+    console.log(authResult.idTokenPayload);
     let userInfo = {
-      token: authResult.accessToken,
-      expires: expiresAt,
-      idToken: authResult.idTokenPayload
+      session: {
+        token: authResult.accessToken,
+        expires: expiresAt,
+        idToken: authResult.idTokenPayload
+      }
+    }
+    if (authResult.idTokenPayload){
+      if(!authResult.idTokenPayload.email_verified){
+        this.props.setError("Please verify your email before logging in.")
+        return;
+      }
     }
     this.props.setUser(userInfo);
+    userInfo = {user : userInfo};
+    localStorage.setItem("user",JSON.stringify(userInfo));
     this.handleRedirect();
   }
 
@@ -67,6 +75,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return({
       setUser: (userInfo) => {dispatch(setUserSession(userInfo))},
+      setError: (error) => {dispatch({type: ERROR_OCCURRED, payload: error})}
   })
 }
 

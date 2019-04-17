@@ -13,32 +13,42 @@ import {
   GET_ALL_QUESTIONNAIRES_PENDING,
   GET_ALL_QUESTIONNAIRES_SUCCESSFUL,
   CLEAR_QUESTIONNAIRES,
-  CLEAR_SUBMIT_RESPONSE
+  CLEAR_SUBMIT_RESPONSE,
+  GET_DETAILS_BY_ID,
+  GET_DETAILS_BY_ID_SUCCESS,
+  GET_RESPONSE_DETAIL_SUCCESS,
+  GET_RESPONSE_DETAIL_PENDING,
+  GET_RESPONSE_DETAIL_FAILURE,
+  ERROR_OCCURRED,
+  CLEAR_ERROR
  } from "../actions/questionnaires";
 
 export default function (state = null, action){
   switch(action.type){
-    // case GET_QUESTIONNAIRE_SUCCESSFUL: {
-    //   return Object.assign({}, state, {
-    //     questionnaire: action.payload
-    //   })
-    // }
 
     case GET_QUESTIONNAIRE_TO_TAKE_PENDING: {
       return Object.assign({}, state, {
         getQuestionnairePending: true,
+        getQuestionnaireFailed: false,
+        getQuestionnaireSuccess: false,
+
       })
     }
 
     case GET_QUESTIONNAIRE_TO_TAKE_FAILURE: {
       return Object.assign({}, state, {
-        getQuestionnaireFailed: true
+        getQuestionnaireFailed: action.error,
+        getQuestionnairePending: false,
+        getQuestionnaireSuccess: false,
+
+
       })
     }
 
     case GET_QUESTIONNAIRE_TO_TAKE_SUCCESSFUL: {
-      console.log(action.payload);
       return Object.assign({}, state, {
+        getQuestionnairePending: false,
+        getQuestionnaireFailed: false,
         getQuestionnaireSuccess: true,
         questionnaire: action.payload
       })
@@ -59,7 +69,6 @@ export default function (state = null, action){
       })
     }
     case CREATE_SUCCESSFUL: {
-      debugger;
       return Object.assign({}, state, {
         ...state,
         createFailed: false,
@@ -135,6 +144,46 @@ export default function (state = null, action){
     }
     case CLEAR_QUESTIONNAIRES: {
       return null;
+    }
+    case GET_DETAILS_BY_ID_SUCCESS : {
+      return Object.assign({}, state, {
+        detail: action.payload,
+      })
+    }
+    case GET_RESPONSE_DETAIL_SUCCESS : {
+      return Object.assign({}, state, {
+        responseDetail : action.payload,
+        responseDetailSuccess: true,
+        responseDetailPending: false,
+        responseDetailFailure: false
+      })
+    }
+    case GET_RESPONSE_DETAIL_PENDING : {
+      return Object.assign({}, state, {
+        responseDetailSuccess: false,
+        responseDetailPending: true,
+        responseDetailFailure: false
+
+      })
+    }
+    case GET_RESPONSE_DETAIL_FAILURE : {
+      return Object.assign({}, state, {
+        responseDetailSuccess: false,
+        responseDetailPending: false,
+        responseDetailFailure: true
+      })
+    }
+    case ERROR_OCCURRED: {
+      console.log(action)
+      return Object.assign({}, state, {
+        hasError: true,
+        errorMessage: action.payload
+      })
+    }
+    case CLEAR_ERROR: {
+      return Object.assign({}, state, {
+        hasError: false
+      })
     }
   default: return state;
   }

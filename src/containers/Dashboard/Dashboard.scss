@@ -9,14 +9,24 @@
     text-decoration: none;
   }
 
-  .SideNav{
-    border-right-color: grey;
-    border-right-style: solid;
-    border-right-width: 1px;
-    height: 100vh;
-  }
 
   .Main{
+    .card{
+      width: 100vw
+    }
+  }
+
+  .tableHeader{
+    margin-bottom: 10px;
+  }
+
+  .tableTitle{
+    display: inline-block;
+  }
+
+  .tableButton{
+    display: inline-block;
+    float:right;
   }
 
 }

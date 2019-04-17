@@ -1,18 +1,25 @@
 
 
-.CreateQuestionnaireForm {
+.CreateQuestionnaire {
+  width:80%;
+  align-content: center;
   ul {
     padding: 0;
     list-style-type: none;
   }
+  .Header{
+    text-transform: uppercase;
+  }
 }
 
 .CreateQuestionnaireForm__answer{
-  background-color: bisque;
   padding: 1em 1em 1em 1em;
 }
 
 .CreateQuestionnaireForm__question{
-  background-color: rgb(132, 132, 243);
-  padding: 1em 1em 1em 1em;
 }
+
+.RemoveButton{
+  float: right;
+}
+

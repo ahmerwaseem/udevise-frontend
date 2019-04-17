@@ -6,8 +6,8 @@ export const config = (token) => {
 
 
 export const getToken = (state) => {
-  if (state && state.user && state.user.userSession){
-    return state.user.userSession.token;
+  if (state && state.user && state.user.session){
+    return state.user.session.token;
   } 
   return null;
 }

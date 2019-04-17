@@ -24,6 +24,16 @@ export const CLEAR_SUBMIT_RESPONSE = "CLEAR_SUBMIT_RESPONSE";
 
 export const CLEAR_QUESTIONNAIRES = "CLEAR_QUESTIONNAIRES";
 
+export const GET_DETAILS_BY_ID = "GET_DETAILS_BY_ID";
+export const GET_DETAILS_BY_ID_SUCCESS = "GET_DETAILS_BY_ID_SUCCESS"
+
+export const GET_RESPONSE_DETAIL = "GET_RESPONSE_DETAIL";
+export const GET_RESPONSE_DETAIL_PENDING = "GET_RESPONSE_DETAIL_PENDING"
+export const GET_RESPONSE_DETAIL_SUCCESS = "GET_RESPONSE_DETAIL_SUCCESS"
+export const GET_RESPONSE_DETAIL_FAILURE = "GET_RESPONSE_DETAIL_FAILURE"
+export const CLEAR_ERROR = "CLEAR_ERROR"
+
+export const ERROR_OCCURRED = "ERROR_OCCURRED";
 
 export const createQuestionnaire= (formValues) =>{
   return {
@@ -51,10 +61,11 @@ export const createQuestionnaireFailure = () =>{
   }
 }
 
-export const getQuestionnaire= (id) =>{
+export const getQuestionnaire= (id,type) =>{
   return {
       type: GET_QUESTIONNAIRE_TO_TAKE,
-      payload: id 
+      payload: id,
+      questionnaireType: type
   }
 }
 
@@ -71,15 +82,14 @@ export const getQuestionnaireSuccessful = (form) =>{
   }
 }
 
-export const getQuestionnaireFailure = () =>{
+export const getQuestionnaireFailure = (error) =>{
   return {
       type: GET_QUESTIONNAIRE_TO_TAKE_FAILURE,
+      error: error
   }
 }
 
 export const submitResponse = (formValues) => {
-  console.log("here");
-  console.log(formValues);
   return {
       type: SUBMIT_RESPONSE,
       payload: formValues 
@@ -136,3 +146,47 @@ export const clearQuestionnaires = () =>{
       type: CLEAR_QUESTIONNAIRES,
   }
 }
+
+export const getDetailsById = (id) =>{
+  return {
+    type: GET_DETAILS_BY_ID,
+    payload: id
+  }
+}
+
+export const getDetailsByIdSuccess = (details) =>{
+  return {
+    type: GET_DETAILS_BY_ID_SUCCESS,
+    payload: details
+  }
+}
+
+
+export const getResponseDetails = (id,responseId) =>{
+  return {
+    type: GET_RESPONSE_DETAIL,
+    payload: id,
+    responseId: responseId
+  }
+}  
+export const getResponseDetailsSuccess = (details) =>{
+  return {
+    type: GET_RESPONSE_DETAIL_SUCCESS,
+    payload: details
+  }
+} 
+
+export const getResponseDetailsPending = () =>{
+  return {
+    type: GET_RESPONSE_DETAIL_PENDING,
+  }
+} 
+
+export const getResponseDetailsFailure = () =>{
+  return {
+    type: GET_RESPONSE_DETAIL_FAILURE,
+  }
+} 
+
+
+

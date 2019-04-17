@@ -1,3 +1,5 @@
+import Auth from '../Auth/Auth';
+
 export const loadState = () => {
   try {
     const serializedState = localStorage.getItem('user');
@@ -11,10 +13,13 @@ export const loadState = () => {
   }
 }
 
-export const saveState = (state) => {
+export const saveState = (userState) => {
   try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('user', serializedState);
+    const auth = new Auth();
+    if (auth.isAuthenticated()){
+      const serializedState = JSON.stringify(userState);
+      localStorage.setItem('user', serializedState);
+    } 
   } catch (err) {
     console.log("Error saving state: " + err);
   }

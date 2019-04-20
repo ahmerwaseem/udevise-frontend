@@ -16,6 +16,7 @@ import { Button } from "@material-ui/core"
 import { getHost } from '../../utils/pathUtils';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/AddBoxSharp';
+import CheckBox from '../../components/CheckBox/CheckBox';
 
 
 
@@ -75,7 +76,8 @@ const questionTypeValues = [
   {"option" : "TEXT","value" : "Short Answer"},
   {"option" : "TEXTAREA","value" : "Long Answer"},
   {"option" : "RADIO","value" : "Radio - Pick One"},
-  {"option" : "SELECT","value" : "DropDown - Select One"},
+  {"option" : "SELECT","value" : "Dropdown - Select One"},
+  {"option" : "CHECKBOX","value" : "Multiple Answers"}
 ];
 
 let test = {
@@ -107,7 +109,7 @@ let Question = ({ question, index, fields, questionType, answersAllowed, type })
 
     <Field name={`${question}.type`} component={SelectField} label="Type" selectvalues={questionTypeValues} validate={required} />
 
-    {(questionType=="RADIO" || questionType=="SELECT") && (
+    {(questionType=="RADIO" || questionType=="SELECT" || questionType=="CHECKBOX") && (
       <div>
       <FieldArray name={`${question}.answersAllowed`} component={renderAnswers} />
       </div>

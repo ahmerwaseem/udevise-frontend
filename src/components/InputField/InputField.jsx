@@ -1,16 +1,7 @@
-import  React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import  React from 'react';
 import './InputField.scss';
-import {Input} from 'reactstrap';
 import { TextField } from '@material-ui/core';
 
-const propTypes = {
-
-};
-
-const defaultProps = {
-
-};
 
 const InputField = ({
   label,
@@ -28,8 +19,5 @@ const InputField = ({
     {...custom}
   />
 )
-
-InputField.propTypes = propTypes;
-InputField.defaultProps = defaultProps;
 
 export default InputField;

@@ -1,41 +1,47 @@
-import  React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import  React from 'react';
 import './CheckBox.scss'
+import Checkbox from '@material-ui/core/Checkbox';
+import { FormGroup, FormControlLabel, FormControl, FormLabel } from '@material-ui/core';
 
-const propTypes = {
 
-};
-
-const defaultProps = {
-
-};
-
-const CheckBox = (props) => {
-
-  const {
-    input,
-    label,
-    meta: { touched, error },
-    selectValues 
-  } = props;
-
-  return(
-    <div className="CheckBox">
-      <div>
-        <label>{label}</label>
-        {selectValues.map((values, index)=>{
-          return(
-            <label><input {...input} type="checkbox" value={values.option ? values.option : values} />{values.value ? values.value : values}</label>
-          )
-        })}
-          {touched && error && <span>{error}</span>}
-      </div>
+const CheckBox = ({ name, label, selectvalues, input, meta, ...custom}) => {
+  console.log(selectvalues);
+  let $options = selectvalues.map((values, i) => (
+    <div key={i}>
+    <FormControlLabel
+      control={
+      <Checkbox
+        name={`${name}[${i}]`}
+        defaultChecked={input.value.indexOf(values.option ? values.option : values) !== -1}
+        onChange={(e, checked) => {
+          let newValue = [...input.value];
+          if (checked){
+            newValue.push(values.option ? values.option : values);
+          } else {
+            newValue.splice(newValue.indexOf(values.option ? values.option : values), 1);
+          }
+          return input.onChange(newValue.sort());
+        }}
+        {...custom}
+      /> 
+      }
+      label = {values.value ? values.value : values}
+      />
     </div>
-  )
-
-}
-
-CheckBox.propTypes = propTypes;
-CheckBox.defaultProps = defaultProps;
+  ));
+  return (
+    <FormControl error={meta.touched && meta.error != undefined} >
+    <FormGroup>
+    <FormLabel component="legend">{label}</FormLabel>
+      {$options}
+      {meta.touched && meta.error && 
+        <div>
+          {meta.error}
+        </div>
+      }
+    </FormGroup>
+    </FormControl>
+  );
+};
 
 export default CheckBox;

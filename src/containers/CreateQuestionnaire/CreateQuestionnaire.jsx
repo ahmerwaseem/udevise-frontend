@@ -112,16 +112,60 @@ let Question = ({ question, index, fields, questionType, answersAllowed, type })
     {(questionType=="RADIO" || questionType=="SELECT" || questionType=="CHECKBOX") && (
       <div>
       <FieldArray name={`${question}.answersAllowed`} component={renderAnswers} />
+      {selectCorrectAnswer(type,questionType,answersAllowed, question)}
       </div>
     )} 
-
-    {answersAllowed  && type == "QUIZ" &&
-      <Field name={`${question}.correctAnswer`} component={SelectField} label="Confirm Correct Answer" selectvalues={answersAllowed} validate={required} />
-    }
   
   </li>
   </div>
 )
+
+let selectCorrectAnswer = (questionnaireType, questionType, answersAllowed, question) => {
+  if (answersAllowed && questionnaireType == "QUIZ" ){
+    return <FieldArray name={`${question}.correctAnswer`} component={renderCorrectAnswers} selectvalues={answersAllowed}/>
+  }
+}
+
+
+
+let CorrectAnswer = ({ answer, index, fields, selectvalues, type }) => (
+  <li key={index}>
+  <div className="CreateQuestionnaireForm__answer">
+  {index!=0 && type=="CHECKBOX" && (
+  <span className="RemoveButton">
+    <Button
+    variant="outlined"
+    color="secondary"             
+    onClick={() => fields.remove(index)}
+    >
+    <DeleteIcon/> Remove Correct Answer
+    </Button>
+  </span>
+  )}
+    <Field name={answer} component={SelectField} label="Select Correct Answer" selectvalues={selectvalues} validate={required} />
+
+</div>
+</li>
+)
+
+
+let renderCorrectAnswers = ({ fields, selectvalues, type }) => {
+  if (!fields.length) fields.push("");
+  return(
+  <ul>
+    {fields.map((answer,index) =>
+     <CorrectAnswer answer={answer} fields={fields} index={index} key={index} selectvalues={selectvalues} type={type} />
+    )}
+    {type == "CHECKBOX" && 
+    <li>
+      <Button variant="outlined" color="primary"  onClick={() => fields.push()}><AddIcon/> Correct Answer</Button>
+    </li>
+    }
+  </ul>
+  )
+}
+
+
 
 let Answer = ({ answer, index, fields }) => (
   <li key={index}>

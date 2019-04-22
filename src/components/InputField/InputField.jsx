@@ -8,7 +8,11 @@ const InputField = ({
   input,
   meta: { touched, invalid, error },
   ...custom
-}) => (
+}) => {
+  if (typeof input.value == "string"){
+  input.onChange(input.value.split())
+  }
+  return (
   <TextField
     label={label}
     placeholder={label}
@@ -19,5 +23,6 @@ const InputField = ({
     {...custom}
   />
 )
+}
 
 export default InputField;

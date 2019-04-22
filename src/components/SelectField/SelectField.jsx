@@ -35,6 +35,10 @@ const SelectField = (props) => {
     init =true;
   }
 
+  if (typeof input.value == "string"){
+    input.onChange(input.value.split())
+  }
+
  return (
   <FormControl error={touched && (typeof error == 'string')}>
     <FormLabel component="legend">{label}</FormLabel>

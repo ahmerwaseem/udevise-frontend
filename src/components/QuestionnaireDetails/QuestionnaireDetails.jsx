@@ -18,8 +18,6 @@ class QuestionnaireDetails extends Component{
     super(props);
   }
   render(){
-    console.log("here")
-    console.log(this.props.location)
     if (this.props.location ){
       const { value }  = this.props.location.state.questionnaire;
   
@@ -46,7 +44,6 @@ class QuestionnaireDetails extends Component{
 }
 
 const getQuestionnaireStats = (data) => {
-  console.log(data);
   return data.map((value, index)=>{
     return (
       <div>

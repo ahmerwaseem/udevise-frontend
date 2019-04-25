@@ -14,8 +14,6 @@ import {Switch, Route, Link} from "react-router-dom";
 import QuestionnaireDetails from '../../components/QuestionnaireDetails/QuestionnaireDetails';
 import CreateQuestionnaire from '../CreateQuestionnaire/CreateQuestionnaire';
 import Fab from '@material-ui/core/Fab';
-
-
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -76,7 +74,6 @@ class Dashboard extends Component{
 
 const getUserSubmissions = (data) =>{
   if (data){
-    console.log(data);
       return(
         <div>
         <Paper>
@@ -166,7 +163,6 @@ const mapQuestionnaires = (data, type) => {
   })
 }
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     ...state,
     questionnaires: state.questionnaire

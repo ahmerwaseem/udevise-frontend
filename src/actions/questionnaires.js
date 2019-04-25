@@ -27,13 +27,28 @@ export const CLEAR_QUESTIONNAIRES = "CLEAR_QUESTIONNAIRES";
 export const GET_DETAILS_BY_ID = "GET_DETAILS_BY_ID";
 export const GET_DETAILS_BY_ID_SUCCESS = "GET_DETAILS_BY_ID_SUCCESS"
 
+
 export const GET_RESPONSE_DETAIL = "GET_RESPONSE_DETAIL";
 export const GET_RESPONSE_DETAIL_PENDING = "GET_RESPONSE_DETAIL_PENDING"
 export const GET_RESPONSE_DETAIL_SUCCESS = "GET_RESPONSE_DETAIL_SUCCESS"
 export const GET_RESPONSE_DETAIL_FAILURE = "GET_RESPONSE_DETAIL_FAILURE"
+export const CLEAR_RESPONSE_DETAILS = "CLEAR_RESPONSE_DETAILS"
+
+
 export const CLEAR_ERROR = "CLEAR_ERROR"
 
+export const GRADE_QUIZ = "GRADE_QUIZ";
+export const GRADE_QUIZ_PENDING = "GRADE_QUIZ_PENDING"
+export const GRADE_QUIZ_SUCCESS = "GRADE_QUIZ_SUCCESS"
+export const CLEAR_GRADE_QUIZ = "CLEAR_GRADE_QUIZ"
+
 export const ERROR_OCCURRED = "ERROR_OCCURRED";
+
+export const GET_REPORT = "GET_REPORT"
+export const GET_REPORT_SUCCESS = "GET_REPORT_SUCCESS"
+export const GET_REPORT_CLEAR = "GET_REPORT_CLEAR"
+
+
 
 export const createQuestionnaire= (formValues) =>{
   return {
@@ -185,6 +200,35 @@ export const getResponseDetailsPending = () =>{
 export const getResponseDetailsFailure = () =>{
   return {
     type: GET_RESPONSE_DETAIL_FAILURE,
+  }
+} 
+
+
+export const gradeQuiz = (formValues,questionnaireId,responseId) =>{
+  return {
+    type: GRADE_QUIZ,
+    payload: formValues,
+    questionnaireId: questionnaireId,
+    responseId: responseId
+  }
+}
+
+export const gradeQuizPending = () =>{
+  return {
+    type: GRADE_QUIZ_PENDING,
+  }
+} 
+
+export const gradeQuizSuccess = () =>{
+  return {
+    type: GRADE_QUIZ_SUCCESS,
+  }
+} 
+
+export const getReportSuccess = (data) =>{
+  return {
+    type: GET_REPORT_SUCCESS,
+    payload: data
   }
 } 
 

@@ -12,10 +12,10 @@ import { required } from '../../utils/validators';
 import { CLEAR_CREATE_STATUS } from "../../actions/questionnaires";
 
 import { Container, Form, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
-import { Button } from "@material-ui/core"
+import { Button, InputAdornment } from "@material-ui/core"
 import { getHost } from '../../utils/pathUtils';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/AddBoxSharp';
+import AddIcon from '@material-ui/icons/Add';
 import CheckBox from '../../components/CheckBox/CheckBox';
 
 
@@ -85,34 +85,40 @@ let test = {
 }
 
 
-let Question = ({ question, index, fields, questionType, answersAllowed, type }) => (
+
+class CreateQuestionnaire extends Component{
+  constructor(props) {
+    super(props);
+    this.toggle=this.toggle.bind(this);
+
+  }
+
+  
+Question = ({ question, index, fields, questionType, answersAllowed, type }) => (
   <div className="CreateQuestionnaireForm__question">
   <li key={index}>
-  {index!=0 && (
-    <span className="RemoveButton">
-    <Button
-      variant="outlined"
-      color="secondary"      
-      onClick={() => fields.remove(index)}
-    >
-    <DeleteIcon/> Remove
-    </Button>
-    </span>
-    )}
     <Field
       name={`${question}.question`}
       type="text"
       component={InputField}
       label={`Question #${index+1}`}
       validate={required}
+      InputProps={{
+        endAdornment: <InputAdornment position="end">  {index!=0 && (
+          <span className="RemoveButton">
+            <DeleteIcon color="secondary"      
+            onClick={() => fields.remove(index) }/>
+          </span>
+          )}</InputAdornment>
+      }}
     />
 
-    <Field name={`${question}.type`} component={SelectField} label="Type" selectvalues={questionTypeValues} validate={required} />
+    <Field name={`${question}.type`} component={SelectField} label="Type" selectvalues={questionTypeValues} validate={required} onClick={()=>this.props.change(`${question}.correctAnswer`,null)} />
 
     {(questionType=="RADIO" || questionType=="SELECT" || questionType=="CHECKBOX") && (
       <div>
-      <FieldArray name={`${question}.answersAllowed`} component={renderAnswers} />
-      {selectCorrectAnswer(type,questionType,answersAllowed, question)}
+      <FieldArray name={`${question}.answersAllowed`} component={this.renderAnswers} question={question} />
+      {this.selectCorrectAnswer(type,questionType,answersAllowed, question)}
       </div>
     )} 
   
@@ -120,85 +126,50 @@ let Question = ({ question, index, fields, questionType, answersAllowed, type })
   </div>
 )
 
-let selectCorrectAnswer = (questionnaireType, questionType, answersAllowed, question) => {
-  if (answersAllowed && questionnaireType == "QUIZ" ){
-    return <FieldArray name={`${question}.correctAnswer`} component={renderCorrectAnswers} selectvalues={answersAllowed}/>
+selectCorrectAnswer = (questionnaireType, questionType, answersAllowed, question) => {
+  if (answersAllowed){
+    if (questionnaireType == "QUIZ"){
+      if (questionType == "CHECKBOX"){
+        return <Field name={`${question}.correctAnswer`} component={CheckBox} label="Confirm Correct Answers" selectvalues={answersAllowed} validate={required} />
+      } else {
+        return <Field name={`${question}.correctAnswer`} component={SelectField} converttoarray={true} label="Confirm Correct Answer" selectvalues={answersAllowed} validate={required} />
+      }
+    }
   }
 }
 
 
-
-let CorrectAnswer = ({ answer, index, fields, selectvalues, type }) => (
+Answer = ({ answer, index, fields, question }) => (
   <li key={index}>
   <div className="CreateQuestionnaireForm__answer">
-  {index!=0 && type=="CHECKBOX" && (
-  <span className="RemoveButton">
-    <Button
-    variant="outlined"
-    color="secondary"             
-    onClick={() => fields.remove(index)}
-    >
-    <DeleteIcon/> Remove Correct Answer
-    </Button>
-  </span>
-  )}
-    <Field name={answer} component={SelectField} label="Select Correct Answer" selectvalues={selectvalues} validate={required} />
-
-</div>
-</li>
-)
-
-
-let renderCorrectAnswers = ({ fields, selectvalues, type }) => {
-  if (!fields.length) fields.push("");
-  return(
-  <ul>
-    {fields.map((answer,index) =>
-     <CorrectAnswer answer={answer} fields={fields} index={index} key={index} selectvalues={selectvalues} type={type} />
-    )}
-    {type == "CHECKBOX" && 
-    <li>
-      <Button variant="outlined" color="primary"  onClick={() => fields.push()}><AddIcon/> Correct Answer</Button>
-    </li>
-    }
-  </ul>
-  )
-}
-
-
-
-let Answer = ({ answer, index, fields }) => (
-  <li key={index}>
-  <div className="CreateQuestionnaireForm__answer">
-  {index!=0 && (
-  <span className="RemoveButton">
-    <Button
-    variant="outlined"
-    color="secondary"             
-    onClick={() => fields.remove(index)}
-    >
-    <DeleteIcon/> Remove
-    </Button>
-  </span>
-  )}
+ 
   <Field
     name={answer}
     type="text"
     component={InputField}
     label={`Answer #${index+1}`}
     validate={required}
+    InputProps={{
+      endAdornment:  <InputAdornment position="end">  {index!=0 && (
+        <span className="RemoveButton">
+          <DeleteIcon color="secondary"      
+          onClick={() => { fields.remove(index); this.props.change(`${question}.correctAnswer`,null); } }
+          ></DeleteIcon>
+          </span>
+        )}</InputAdornment>
+    }}
   />
 </div>
 </li>
 )
 
 
-let renderAnswers = ({ fields }) => {
+renderAnswers = ({ fields, question }) => {
   if (!fields.length) fields.push("");
   return(
   <ul>
     {fields.map((answer,index) =>
-     <Answer answer={answer} fields={fields} index={index} key={index}/>
+     <this.Answer answer={answer} fields={fields} index={index} key={index} question={question}/>
     )}
     <li>
       <Button variant="outlined" color="primary"  onClick={() => fields.push()}><AddIcon/> Answer</Button>
@@ -207,12 +178,12 @@ let renderAnswers = ({ fields }) => {
   )
 }
 
-let renderQuestions = ({ fields }) => {
+renderQuestions = ({ fields }) => {
   if (!fields.length)fields.push({});
   return (
     <ul>
       {fields.map((question, index) =>
-        <Question question={question} fields={fields} index={index} key={index}/>
+        <this.Question question={question} fields={fields} index={index} key={index}/>
       )}
 
       <li>
@@ -234,14 +205,7 @@ Question = connect(
       answersAllowed
     }
   }
-)(Question)
-
-class CreateQuestionnaire extends Component{
-  constructor(props) {
-    super(props);
-    this.toggle=this.toggle.bind(this);
-
-  }
+)(this.Question)
 
   toggle = () => {
     this.props.clear();
@@ -261,7 +225,6 @@ class CreateQuestionnaire extends Component{
 
 
   render(){
-    console.log(this.props)
     const { handleSubmit, pristine, reset, submitting, questionnaire, modal } = this.props;
     return (
       <div className="CreateQuestionnaire">
@@ -333,7 +296,7 @@ class CreateQuestionnaire extends Component{
             /> 
           </div>
 
-          <FieldArray name="questions" component={renderQuestions} />
+          <FieldArray name="questions" component={this.renderQuestions} />
 
           <div className ="CreateQuestionnaireForm__submit">
             <Button fullWidth type="submit" variant="contained" color="primary">

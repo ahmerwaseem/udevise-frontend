@@ -20,7 +20,12 @@ import {
   GET_RESPONSE_DETAIL_PENDING,
   GET_RESPONSE_DETAIL_FAILURE,
   ERROR_OCCURRED,
-  CLEAR_ERROR
+  GRADE_QUIZ_PENDING,
+  GRADE_QUIZ_SUCCESS,
+  CLEAR_GRADE_QUIZ,
+  CLEAR_ERROR,
+  CLEAR_RESPONSE_DETAILS,
+  GET_REPORT_SUCCESS
  } from "../actions/questionnaires";
 
 export default function (state = null, action){
@@ -173,8 +178,15 @@ export default function (state = null, action){
         responseDetailFailure: true
       })
     }
+    case CLEAR_RESPONSE_DETAILS: {
+      return Object.assign({}, state, {
+      responseDetail : action.payload,
+      responseDetailSuccess: true,
+      responseDetailPending: false,
+      responseDetailFailure: false
+      })
+    }
     case ERROR_OCCURRED: {
-      console.log(action)
       return Object.assign({}, state, {
         hasError: true,
         errorMessage: action.payload
@@ -185,6 +197,37 @@ export default function (state = null, action){
         hasError: false
       })
     }
+    case GRADE_QUIZ_PENDING: {
+      return Object.assign({}, state, {
+        gradeQuizPending: true,
+        gradeQuizSuccess: false
+      })
+    }
+    case GRADE_QUIZ_SUCCESS: {
+      return Object.assign({}, state, {
+        gradeQuizPending: false,
+        gradeQuizSuccess: true
+      })
+    }
+    case CLEAR_GRADE_QUIZ: {
+      return Object.assign({}, state, {
+        gradeQuizPending: false,
+        gradeQuizSuccess: false
+      })
+    }
+
+    // case GET_REPORT_SUCCESS: {
+    //   return Object.assign({}, state, {
+    //     reportData: action.payload
+    //   })
+    // }
+    // case GET_REPORT_CLEAR: {
+    //   return Object.assign({}, state, {
+    //     reportData: null
+    //   })
+    // }
+
+    
   default: return state;
   }
 }

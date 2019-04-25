@@ -9,22 +9,21 @@ const propTypes = {
 };
 
 const defaultProps = {
-
+  rows: 5,
+  rowsMax: 5,
 };
 
 const TextArea = props => {
   const {
-    input,
-    label,
-    meta: { touched, error },
-    placeholder
+    rows,
+    rowsMax
   } = props;
 
   return(
     <InputField {...props}   
     multiline={true}
-    rows={5}
-    rowsMax={5}/>
+    rows={rows}
+    rowsMax={rowsMax}/>
   )
 }
 

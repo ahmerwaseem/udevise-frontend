@@ -57,7 +57,6 @@ class AnswerQuestionnaire extends Component{
   
 
   render(){
-    console.log(this.props)
     if (this.props.questionnaire && this.props.questionnaire.submitResponseSuccess){
       if (this.props.questionnaire.questionnaire.type == "QUIZ"){
         return <Redirect to={`/response/${this.props.questionnaire.questionnaire.id}`} />
@@ -84,18 +83,11 @@ class AnswerQuestionnaire extends Component{
             // special case to render radio buttons in reduxForm
             if (fieldType=="radio"){
               return(
-                <div>
-                <FormLabel component="legend">{item.question}</FormLabel>
-                {item.answersAllowed.map((values, index)=>{
-                  return(
-                    <Field validate={required} component={stringToComponentMapper[item.type]} type="radio" name={fieldName} value={values.option ? values.option : values}>{values.value ? values.value : values}</Field>
-                  )
-                })}
-                </div>
-              )
+                <RadioButton selectvalues={item.answersAllowed} name={fieldName} label={item.question} converttoarray={true} /> 
+              )    
             } else{
               return(<div>
-              <Field key={index} validate={required} name={fieldName} component={stringToComponentMapper[item.type]} label={item.question} selectvalues={item.answersAllowed}/> 
+              <Field key={index} validate={required} name={fieldName} converttoarray={true} component={stringToComponentMapper[item.type]} label={item.question} selectvalues={item.answersAllowed}/> 
               </div>)
             }
           })}

@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import './DetailCard.scss'
 import { Card, CardActionArea, CardContent, Button, CardActions, Typography } from '@material-ui/core';
 import AccordianItem from '../AccordianItem/AccordianItem';
+import { getReport } from '../../api/questionnaire';
+import { config, getToken } from '../../utils/userUtils';
+import { triggerDownload } from '../../utils/IOUtils';
 
 const propTypes = {
   children: PropTypes.node.isRequired,
@@ -24,7 +27,7 @@ class DetailCard extends Component{
   }
 
   render(){
-    const { title, description, createTime, responses, children, width } = this.props; 
+    const { title, description, createTime, responses, children, width, id } = this.props; 
     return (
       <div className = "DetailCard"> 
         <Card style={{width:width}}>
@@ -48,8 +51,13 @@ class DetailCard extends Component{
             {children}
           </CardContent>
           <CardActions>
-            <Button size="large" color="primary">Share</Button>
-            <Button size="large" color="primary">Export Responses</Button>
+            <Button size="large" color="primary" >Share</Button>
+            <Button size="large" color="primary" onClick={()=>{
+              getReport(id, getToken(this.props), "tsv", triggerDownload)
+              }
+            }>
+            Export Responses
+            </Button>
           </CardActions>
         </Card>
          

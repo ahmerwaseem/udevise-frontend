@@ -45,6 +45,8 @@ class QuestionnaireDetails extends Component{
           description={questionnaire.detail.description}
           createTime={questionnaire.detail.createTime}
           responses={questionnaire.detail.responses}
+          id={questionnaire.detail.id}
+          {...this.props}
         >
         {questionnaire.detail.questions && 
         <div>
@@ -62,7 +64,6 @@ class QuestionnaireDetails extends Component{
 
         </DetailCard>
         {questionnaire.detail.responses && questionnaire.detail.responses.map((item)=>{
-          console.log(item.responseId);
           return (
 
             <Card>
@@ -103,6 +104,7 @@ class QuestionnaireDetails extends Component{
   }
 
 }
+
 
 const processAnswers= (data) => {
   if (data){
@@ -161,7 +163,8 @@ const countAnswers = (data) => {
 
 const mapStateToProps = (state) => {
   return {
-    questionnaire: state.questionnaire
+    questionnaire: state.questionnaire,
+    ...state
   }
 }
 

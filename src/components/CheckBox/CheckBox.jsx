@@ -6,13 +6,9 @@ import { validString } from '../../utils/validators'
 
 
 const CheckBox = ({ name, label, selectvalues, input, meta, ...custom}) => {
-  console.log(selectvalues);
-  debugger;
-  console.log(input);
 
   let $options = selectvalues.map((values, i) => (
     <div>
-      {console.log(values)}
       {values != undefined && 
       <div key={i}>
       <FormControlLabel

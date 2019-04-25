@@ -1,6 +1,11 @@
 
 .ResponseDetail {
 
+  h1,h2,h3,h4,h5{
+    padding-top:8px;
+    padding-bottom:8px;
+  }
+
   .answer--incorrect{
     text-decoration: line-through;
     color: red;
@@ -9,6 +14,10 @@
   .answer--correct{
     color: green;
     fill: green
+  }
+
+  .ResponseDetailForm{
+    padding: 10px 0 10px 0;
   }
 
 }

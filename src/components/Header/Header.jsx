@@ -43,7 +43,6 @@ class Header extends Component{
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
                 {(()=>{
-                  console.log(this.props.user);
                   if (this.props.user && this.props.user.session){
                   const {name} = this.props.user.session.idToken;
                   return(

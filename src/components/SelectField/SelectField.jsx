@@ -25,6 +25,7 @@ const SelectField = (props) => {
     meta: { touched, error },
     name,
     selectvalues,
+    converttoarray,
     ...custom
     
   } = props;
@@ -35,7 +36,7 @@ const SelectField = (props) => {
     init =true;
   }
 
-  if (typeof input.value == "string"){
+  if (typeof input.value == "string" && converttoarray){
     input.onChange(input.value.split())
   }
 

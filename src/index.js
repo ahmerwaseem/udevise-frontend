@@ -73,7 +73,7 @@ ReactDOM.render(
           <ErrorBoundary>
             <Route exact path="/" component={App} />
             {/* <Route path="/create" component={requireAuth(CreateQuestionnaire)} /> */}
-            <Route path="/dashboard" component={requireAuth(Dashboard)} />
+            <Route exact path="/dashboard" component={requireAuth(Dashboard)} />
             <Route exact path="/survey/:id" component={AnswerQuestionnaire} />
             <Route exact path="/quiz/:id" component={requireAuth(AnswerQuestionnaire, { type: "QUIZ"})} />
             <Route exact path="/callback" component={Callback} />

@@ -43,15 +43,14 @@ class Dashboard extends Component{
     if (this.props.questionnaires && this.props.questionnaires.allQuestionnaires ){
 
       const {allQuestionnaires,} = this.props.questionnaires;
+      const {submissions} = this.props.user;
       return(
       <div className = "Dashboard"> 
-      
-        <PaginateWrapper data={allQuestionnaires.filter(x=>x.type == "SURVEY")} Component={QuestionnaireTable} type="SURVEY" />
-        <PaginateWrapper data={allQuestionnaires.filter(x=>x.type == "QUIZ")} Component={QuestionnaireTable} type="QUIZ" />
 
-        {this.props.user && 
-          <PaginateWrapper data={this.props.user.submissions} Component={UserSubmissionTable}/>
-
+        <PaginateWrapper data={allQuestionnaires.filter(x=>x.type == "SURVEY")} Component={QuestionnaireTable} type="SURVEY" {...this.props}/>
+        <PaginateWrapper data={allQuestionnaires.filter(x=>x.type == "QUIZ")} Component={QuestionnaireTable} type="QUIZ" {...this.props} />
+        {submissions && 
+          <PaginateWrapper data={submissions} Component={UserSubmissionTable} {...this.props}/>
         }
       </div>
       )
@@ -70,7 +69,6 @@ const mapStateToProps = (state) => {
   return {
     ...state,
     questionnaires: state.questionnaire
-
   }
 }
 

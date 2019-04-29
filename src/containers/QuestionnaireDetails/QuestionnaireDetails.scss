@@ -4,8 +4,15 @@
   justify-content: center;
   height:auto;
   .QuestionnaireDetailsWrapper{
-    width: 80vw;
+    @media only screen and (max-width: 600px) {
+      width:100vw;
+    }
+  
+    @media only screen and (min-width: 601px) {
+      width:60vw;
+    }
   }
+
 
   .results-container{
     display: flex;

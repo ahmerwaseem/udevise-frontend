@@ -12,6 +12,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  data: [],
   itemsPerPage: 5
 };
 
@@ -19,7 +20,6 @@ class PaginateWrapper extends Component{
   constructor(props) {
     super(props);
     let initialData = this.props.data.slice(0,this.props.itemsPerPage);
-
     this.state = {
       itemsPerPage: this.props.itemsPerPage,
       rawData: this.props.data,

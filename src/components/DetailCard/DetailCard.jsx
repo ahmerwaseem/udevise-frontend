@@ -108,6 +108,7 @@ class DetailCard extends Component{
             Export
             </Button>
           </CardActions>
+          <Button fullWidth className="button" variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}>Back</Button>   
         </Card>
          
       </div>

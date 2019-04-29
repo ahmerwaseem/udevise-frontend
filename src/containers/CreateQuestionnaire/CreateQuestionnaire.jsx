@@ -255,7 +255,7 @@ Question = connect(
           Upload Via JSON
           </Button> */}
 
-        <Button variant="contained" color="secondary" onClick={()=>{
+        <Button variant="outlined" color="secondary" onClick={()=>{
           this.toggle();
         }}>
           Reset

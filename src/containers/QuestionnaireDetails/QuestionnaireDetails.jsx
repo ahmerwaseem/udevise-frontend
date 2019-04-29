@@ -29,7 +29,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 const TabContainer = (props) => {
   return (
-    <Typography color="primary" component="div" style={{ padding: 8 * 3 }}>
+    <Typography color="primary" component="div">
       {props.children}
     </Typography>
   );
@@ -60,7 +60,6 @@ class QuestionnaireDetails extends Component{
 
     return(
     <div className="QuestionnaireDetails">
-      <Button className="button" variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}><ArrowBack/></Button>   
       <div className="QuestionnaireDetailsWrapper">
         {(questionnaire && questionnaire.detail)
         &&
@@ -97,7 +96,7 @@ class QuestionnaireDetails extends Component{
           </Paper>
 
           {value === 0 && 
-            <TabContainer>
+            <TabContainer className="tabContainer">
               {questionnaire.detail.questions && questionnaire.detail.questions.map((item) => {
                 return (
                   <AccordianItem heading={`${item.question} ${item.correctAnswer ? ` (Answer: ${item.correctAnswer.toString()})` : ""}`}>
@@ -107,7 +106,7 @@ class QuestionnaireDetails extends Component{
               })}
             </TabContainer>}
           {value === 1 && 
-            <TabContainer>
+            <TabContainer  className="tabContainer">
                 {questionnaire.detail.responses && questionnaire.detail.responses.map((item)=>{
                   return (
 
@@ -141,7 +140,6 @@ class QuestionnaireDetails extends Component{
                 })}
             </TabContainer>}
         </div>
-
         </DetailCard>
       </div>
         }

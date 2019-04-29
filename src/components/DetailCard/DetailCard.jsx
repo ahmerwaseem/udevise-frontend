@@ -6,6 +6,43 @@ import AccordianItem from '../AccordianItem/AccordianItem';
 import { getReport } from '../../api/questionnaire';
 import { config, getToken } from '../../utils/userUtils';
 import { triggerDownload } from '../../utils/IOUtils';
+import {
+  FacebookShareButton,
+  GooglePlusShareButton,
+  LinkedinShareButton,
+  TwitterShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  PinterestShareButton,
+  VKShareButton,
+  OKShareButton,
+  RedditShareButton,
+  TumblrShareButton,
+  LivejournalShareButton,
+  MailruShareButton,
+  ViberShareButton,
+  WorkplaceShareButton,
+  LineShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  TelegramIcon,
+  WhatsappIcon,
+  GooglePlusIcon,
+  LinkedinIcon,
+  PinterestIcon,
+  VKIcon,
+  OKIcon,
+  RedditIcon,
+  TumblrIcon,
+  LivejournalIcon,
+  MailruIcon,
+  ViberIcon,
+  WorkplaceIcon,
+  LineIcon,
+  EmailIcon,
+} from 'react-share';
+import { getHost } from '../../utils/pathUtils';
 
 const propTypes = {
   children: PropTypes.node.isRequired,
@@ -27,12 +64,13 @@ class DetailCard extends Component{
   }
 
   render(){
-    const { title, description, createTime, responses, children, width, id } = this.props; 
+    const { title, description, createTime, responses, children, width, id, type } = this.props; 
+    console.log(type);
     return (
       <div className = "DetailCard"> 
         <Card style={{width:width}}>
           <CardContent>
-            <Typography variant="h5" color="secondary" component="h2">
+            <Typography variant="h2" color="secondary">
               {title}
             </Typography>
             {description && <Typography color="textSecondary">
@@ -51,12 +89,23 @@ class DetailCard extends Component{
             {children}
           </CardContent>
           <CardActions>
-            <Button size="large" color="primary" >Share</Button>
+          <EmailShareButton 
+            url={`${getHost()}/${type.toLowerCase()}/${id}`}
+            subject={`Take this ${type.toLowerCase()}!`} 
+>              <EmailIcon/>
+            </EmailShareButton>
+            <TwitterShareButton 
+              url={`${getHost()}/${type.toLowerCase()}/${id}`}
+           ><TwitterIcon/></TwitterShareButton>
+                       <FacebookShareButton 
+              url={`${getHost()}/${type.toLowerCase()}/${id}`}
+           ><FacebookIcon/></FacebookShareButton>
+          
             <Button size="large" color="primary" onClick={()=>{
               getReport(id, getToken(this.props), "tsv", triggerDownload)
               }
             }>
-            Export Responses
+            Export (TSV)
             </Button>
           </CardActions>
         </Card>

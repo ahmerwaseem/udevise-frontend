@@ -25,7 +25,7 @@ class AccordianItem extends Component{
       <div className = "AccordianItem"> 
         <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            <Typography>{heading}</Typography>
+            <Typography variant="h6">{heading}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
               {children}

@@ -17,83 +17,75 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { Typography, Paper } from '@material-ui/core';
 
-
-let init = false;
 
 class ResponseDetail extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      popup: true
-    }
-  }
-
-  
-  initializeScoreFeedback = (responseDetails) =>{
-    console.log(responseDetails)
-    if (this.props.match.params.responseId && responseDetails && responseDetails.responses > 0){
-      this.props.initialize({ 
-        "score": responseDetails.responses[0].score,
-        "feedback": responseDetails.responses[0].feedback
-      })
+      popup: true,
+      init: false,
     }
   }
 
   userResult = (responseDetails) => {
     let score = null;
     let feedback = null;
-    if (responseDetails){
-      console.log(responseDetails.responses.length);
 
-    }
     if (responseDetails && responseDetails.responses.length > 0){
         score = responseDetails.responses[0].score
         feedback = responseDetails.responses[0].feedback
     }
     return (
-      <div>
+      <div className="resultsContainer">
         <div>
           Your Score: {score ? score : "Not Graded Yet"}
         </div>
         <div>
           Feedback: {feedback ? feedback : "No Feedback Given"}
         </div>
+        <div className="buttonContainer">
+          <Button className="button" fullWidth variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}>Back</Button>   
+        </div>       
+
       </div>
     )
 
   }
 
-  handleClose = () =>{
-    this.setState({
-      popup: false
-    })
-    this.props.clear();
-  }
-
-  componentWillMount(){
-    console.log(this.props.match.params);
-    this.props.getDetails(this.props.match.params.id,this.props.match.params.responseId)
-  }
-
-  componentWillUnmount(){
-    this.props.clear();
-    this.props.clearResponseDetails();
-  }
-
-  componentDidMount(){
-    if (this.props.match.params.responseId && this.props.responseDetails && this.props.responseDetails.responses > 0){
+  initializeFeedback = () => {
+    if (this.props.responseDetail && this.props.match.params.responseId && !this.state.init){
+      this.setState({
+        init: true
+      })
       this.props.initialize({ 
-        "score": this.props.responseDetails.responses[0].score,
-        "feedback": this.props.responseDetails.responses[0].feedback
+        "score": this.props.responseDetail.responses[0].score,
+        "feedback": this.props.responseDetail.responses[0].feedback
       })
     }
   }
 
+  handleClose = () =>{
+    this.props.clearGradeQuiz();
+    this.props.history.push(`/detail/${this.props.match.params.id}`);
+  }
+
+  componentWillMount(){
+    this.props.getDetails(this.props.match.params.id,this.props.match.params.responseId)
+  }
+
+  componentWillUnmount(){
+    this.props.clearGradeQuiz();
+    this.props.clearResponseDetails();
+  }
+
+
   render(){
+    console.log(this.props);
     const { responseDetail, pending, success, failure, gradeQuizSuccess } = this.props;
     return(
-    <div className = "ResponseDetail">
+    <div className="ResponseDetail">
       {gradeQuizSuccess && 
         <div>
               <div>
@@ -123,28 +115,44 @@ class ResponseDetail extends Component{
         <Spinner/>
       }
       {responseDetail && success &&
-        <div>
-          <h2>{responseDetail.title}</h2> 
+        <Paper className = "paper" squared>
+          <Typography variant="h2" color="secondary">{responseDetail.title}</Typography> 
           {responseDetail.description && <h3>{responseDetail.description}</h3>}
+          {responseDetail.responses[0].submitTime && <div>
+            <Typography color="textSecondary">Submit Time: {responseDetail.responses[0].submitTime}</Typography>
+            </div>}
+            {responseDetail.type == "QUIZ" &&  this.props.match.params.responseId && responseDetail.responses[0].submitTime && <div>
+            <Typography color="textSecondary">User: {`${responseDetail.responses[0].user.firstName} ${responseDetail.responses[0].user.lastName} - ${responseDetail.responses[0].user.emailAddress}`}</Typography>
+            </div>}
           {responseDetail.questions &&
             getQuestionDetails(responseDetail.questions,responseDetail.type)
           }
+    
           {responseDetail.type == "QUIZ" && 
           <div>
-            {this.props.match.params.responseId ? 
+            {this.props.match.params.responseId ?  
               <div className="ResponseDetailForm">
                 <form onSubmit={this.props.handleSubmit(this.props.gradeResponse)}>
-                  <Field component={InputField} name="score" parse={value => Number(value)} type="number" label={"Score Earned"} validate={[positiveNumber]}/>
+                  <Field component={InputField} name="score" parse={value => Number(value)} type="number" label={"Score Earned"} validate={positiveNumber}/>
                   <Field component={TextArea} name="feedback" label="Feedback" validate={required}/>
-                  <Button variant="contained" color="primary" type="submit">Submit</Button>          
+                  {this.initializeFeedback()}
+                  <div className="buttonContainer">
+                    <Button className="button" variant="contained" color="secondary" onClick={this.handleClose}>Back</Button>          
+                    <Button className="button" variant="contained" color="primary" type="submit">Submit</Button>  
+                  </div>        
                 </form>
-                {this.initializeScoreFeedback(responseDetail)}
               </div>
             : <div>{this.userResult(responseDetail)}</div>
             }
           </div>
         }
-        </div>
+
+        {this.props.match.params.responseId && responseDetail.type == "SURVEY" &&
+          <div className="buttonContainer">
+            <Button className="button" fullWidth variant="contained" color="secondary" onClick={this.handleClose}>Back</Button>          
+          </div>  
+      }
+        </Paper>
       }
       {failure &&
         <div>
@@ -162,12 +170,12 @@ const getQuestionDetails = (questions,type) => {
   if (questions){
     return questions.map((value,index)=>{
       return(
-        <div>
-        <h5>{value.question}</h5>
+        <Paper className="paper" raised={true}>
+        <Typography variant="h5" color="primary">{value.question}</Typography>
         {value.answersGiven &&
           getUserAnswer(value.answersGiven, value.correctAnswer,type)
         }
-        </div>
+        </Paper>
 
       )
     })
@@ -179,7 +187,6 @@ const getUserAnswer = (answerList, correctAnswer,type) => {
     return answerList.map((value,index)=>{
       return(
         <div>
-          {console.log(value.correct)}
           <div className={classNames({
               'answer--incorrect': value.correct !== undefined && !value.correct,
               'answer--correct': value.correct
@@ -214,6 +221,7 @@ const mapStateToProps = (state) => {
     failure : state.questionnaire ? state.questionnaire.responseDetailFailure: null,
     gradeQuizPending : state.questionnaire ? state.questionnaire.gradeQuizPending: null,
     gradeQuizSuccess : state.questionnaire ? state.questionnaire.gradeQuizSuccess: null,
+    ...state
   }
 }
 
@@ -221,12 +229,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return({
     getDetails: (id,responseId) => {dispatch(getResponseDetails(id,responseId))},
     gradeResponse: (formValues) => {dispatch(gradeQuiz(formValues,ownProps.match.params.id,ownProps.match.params.responseId))},
-    clear: () => {dispatch({type: CLEAR_GRADE_QUIZ})},
+    clearGradeQuiz: () => {dispatch({type: CLEAR_GRADE_QUIZ})},
     clearResponseDetails: () => {dispatch({type: CLEAR_RESPONSE_DETAILS})}
   })
 }
 
 export default reduxForm({
   form: "ResponseDetailForm",
-  enableReinitialize: true
 })(connect(mapStateToProps, mapDispatchToProps)(ResponseDetail));

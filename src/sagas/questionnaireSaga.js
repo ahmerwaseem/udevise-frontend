@@ -13,6 +13,7 @@ import { takeEvery, call, put, select } from 'redux-saga/effects'
 
 import Axios from "axios";
 import { config, getToken } from "../utils/userUtils";
+import { getErrorMessage } from "../utils/errorHelper";
 
 
 function* createQuestionnaire(action) {
@@ -24,6 +25,8 @@ function* createQuestionnaire(action) {
     yield put( createQuestionnaireSuccessful(result.data) );
   } catch (e) {
     yield put(createQuestionnaireFailure());
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
+
   }
 }
 
@@ -39,6 +42,8 @@ function* getQuestionnaireForEndUser(action) {
       error = e.response.data.message;
     }
     yield put(getQuestionnaireFailure(error));
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
+
   }
 }
 
@@ -51,6 +56,8 @@ function* getAllQuestionnaires() {
     yield put( getAllQuestionnairesSuccessful(result.data));
   } catch (e) {
     yield put(getAllQuestionnairesFailure());
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
+
   }
 }
 
@@ -63,6 +70,8 @@ function* submitResponseForm(action) {
     yield put( submitResponseSuccessful(result.data));
   } catch (e) {
     yield put(submitResponseFailure());
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
+
   }
 }
 
@@ -72,7 +81,7 @@ function* getDetails(action) {
     let result = yield call(Axios.get,`/api/v1/questionnaire/${action.payload}/detail`, config(token));
     yield put( getDetailsByIdSuccess(result.data));
   } catch (e) {
-    alert("error");
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
   }
 }
 
@@ -83,7 +92,7 @@ function* getResponseDetails(action) {
     let result = yield call(Axios.get,`/api/v1/response/detail/${action.payload}/${action.responseId ? action.responseId : ""}`, config(token));
     yield put( getResponseDetailsSuccess(result.data));
   } catch (e) {
-    yield put ( { type: ERROR_OCCURRED });
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
   }
 }
 
@@ -94,7 +103,7 @@ function* gradeQuiz(action) {
     let result = yield call(Axios.put,`/api/v1/response/grade/${action.questionnaireId}/${action.responseId}`, action.payload, config(token));
     yield put( gradeQuizSuccess() );
   } catch (e) {
-    yield put ( { type: ERROR_OCCURRED });
+    yield put ( { type: ERROR_OCCURRED, payload: getErrorMessage(e) });
   }
 }
 

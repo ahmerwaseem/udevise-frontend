@@ -3,7 +3,8 @@ import {
   SET_USER_SESSION,
   GET_USER_SUBMITTED_FAILURE,
   GET_USER_SUBMITTED_PENDING,
-  GET_USER_SUBMITTED_SUCCESS
+  GET_USER_SUBMITTED_SUCCESS,
+  CLEAR_USER_SESSION
 
 } from '../actions/user';
 
@@ -39,6 +40,9 @@ export default function (state = null, action) {
         fetchSubmissionFailure: true,
       })
     }
+     case CLEAR_USER_SESSION: {
+       return null;
+     }
 
     default: return state;
   } 

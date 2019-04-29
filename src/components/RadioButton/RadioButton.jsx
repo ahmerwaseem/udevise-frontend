@@ -23,22 +23,19 @@ const customRadio = (props) =>{
     meta: { touched, error } ,
     itemName,
     converttoarray,
-    name
+    name,
+    customDispatch
   } = props;
 
-  let ischecked = false;
-
-  if (typeof input.value == "object" && converttoarray && input.checked == true){
-    input.value = input.value.join()
-  } 
+  console.log(props);
 
   return(
-    <div className="radio">`
+    <div className="radio">
         <Radio        
           {...input}
           checked={input.checked}
           type="radio"
-          onChange={()=>input.onChange(converttoarray ? input.value.split() : input.value)}
+          onChange={()=>{input.onChange(input.value); customDispatch(input.value.split())}}
           />
         <label>{props.children}</label>
     </div>
@@ -55,8 +52,11 @@ const RadioButton = props => {
     itemName,
     name,
     converttoarray,
-    selectvalues
+    selectvalues,
+    ...custom
   } = props;
+
+  console.log(props);
 
   // if (typeof input.value == "string" && converttoarray && input.){
   //   input.onChange(input.value.split())
@@ -64,7 +64,7 @@ const RadioButton = props => {
 
   let $options = selectvalues.map((values, i) => {
         return(
-          <Field validate={required} component={customRadio} converttoarray={converttoarray} type="radio" name={name} value={values.option ? values.option : values}>{values.value ? values.value : values}</Field>
+          <Field validate={required} component={customRadio} converttoarray={converttoarray} type="radio"{...custom} name={name} value={values.option ? values.option : values}>{values.value ? values.value : values}</Field>
         )
   });
   return (

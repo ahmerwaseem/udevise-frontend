@@ -1,6 +1,11 @@
 
 .ResponseDetail {
 
+  .paper{
+    padding: 20px;
+    margin: 10px;
+  }
+
   h1,h2,h3,h4,h5{
     padding-top:8px;
     padding-bottom:8px;
@@ -18,6 +23,10 @@
 
   .ResponseDetailForm{
     padding: 10px 0 10px 0;
+  }
+
+  .resultsContainer{
+    margin: 10px;
   }
 
 }

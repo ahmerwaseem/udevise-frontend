@@ -22,6 +22,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import uuid from 'uuid';
+import QuestionnaireTable from '../../components/QuestionnaireTable/QuestionnaireTable';
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -51,8 +52,9 @@ class Dashboard extends Component{
       return(
       <div className = "Dashboard"> 
         <h4>Your Creations</h4>
-        {createTableForQuestionnaires(allQuestionnaires,"SURVEY")}
-        {createTableForQuestionnaires(allQuestionnaires,"QUIZ")}
+        <QuestionnaireTable data={allQuestionnaires} type="SURVEY"/>
+        <QuestionnaireTable data={allQuestionnaires} type="QUIZ"/>
+
         <h4>Quizzes Taken</h4>
         {this.props.user && 
           getUserSubmissions(this.props.user.submissions)
@@ -108,9 +110,9 @@ const getUserSubmissions = (data) =>{
 }
 
 const createTableForQuestionnaires = (data, type) => (
-  <div>
+  <Paper className="paper">
     <div className="tableHeader">
-    <Typography  className="tableTitle" variant="h6" color="primary">
+    <Typography  className="tableTitle" variant="h2" color="secondary">
           {type}
     </Typography>
     < Link to={`create/${type.toLowerCase()}`}>
@@ -133,7 +135,7 @@ const createTableForQuestionnaires = (data, type) => (
   </TableBody>
   </Table>
   </Paper>
-  </div>
+  </Paper>
 )
 
 const mapQuestionnaires = (data, type) => {

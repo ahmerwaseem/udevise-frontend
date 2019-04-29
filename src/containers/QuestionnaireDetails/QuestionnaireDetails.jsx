@@ -5,7 +5,7 @@ import { Alert} from 'reactstrap';
 import DetailCard from '../../components/DetailCard/DetailCard';
 import { getDetailsById, CLEAR_QUESTIONNAIRES } from '../../actions/questionnaires';
 import AccordianItem from '../../components/AccordianItem/AccordianItem';
-import { Typography,Button, Card, CardContent, CardMedia} from '@material-ui/core';
+import { Typography,Button, Card, CardContent, CardMedia, Grid} from '@material-ui/core';
 import Axios from 'axios';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,27 +15,52 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Link } from 'react-router-dom';
 import { getHost } from '../../utils/pathUtils';
+import { Doughnut } from 'react-chartjs-2';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import * as CopyIcon from '@material-ui/icons/FileCopy';
+import DeleteIcon from '@material-ui/icons/Delete';
+import FileCopy from '@material-ui/icons/FileCopyTwoTone'
+import ArrowBack from '@material-ui/icons/ArrowBack'
 
+
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+
+const TabContainer = (props) => {
+  return (
+    <Typography color="primary" component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
 
 class QuestionnaireDetails extends Component{
   constructor(props) {
     super(props);
+    this.state = {
+      value: 0,
+      copied: false
+    };
   }
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
   
   componentWillMount() {
     this.props.getDetail(this.props.match.params.id)
-  }
-
-  componentWillUnmount() {
-    this.props.clear();
   }
 
   
   render(){
     console.log(this.props.questionnaire);
     const { questionnaire } = this.props;
+    const { value } = this.state;
+
     return(
     <div className="QuestionnaireDetails">
+      <Button className="button" variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}><ArrowBack/></Button>   
       <div className="QuestionnaireDetailsWrapper">
         {(questionnaire && questionnaire.detail)
         &&
@@ -46,57 +71,79 @@ class QuestionnaireDetails extends Component{
           createTime={questionnaire.detail.createTime}
           responses={questionnaire.detail.responses}
           id={questionnaire.detail.id}
+          type={questionnaire.detail.type}
           {...this.props}
         >
         {questionnaire.detail.questions && 
         <div>
-          <Typography color="textSecondary"> Direct Link: {`${getHost()}/${questionnaire.detail.type.toLowerCase()}/${questionnaire.detail.id}`} </Typography>
-
-          <Typography color="textSecondary"> Quick Results </Typography>
-        {questionnaire.detail.questions.map((item) => {
-            return (
-              <AccordianItem heading={item.question}>
-                {item.answersGiven ? processAnswers(item) : "No responses have been submitted." }
-              </AccordianItem>
-            )
-          })}
+          <Typography color="textSecondary"> 
+            Direct Link: {`${getHost()}/${questionnaire.detail.type.toLowerCase()}/${questionnaire.detail.id}  `} 
+            <CopyToClipboard text={`${getHost()}/${questionnaire.detail.type.toLowerCase()}/${questionnaire.detail.id}`}
+          onCopy={() => this.setState({copied: true})}>
+                      <FileCopy color="primary" /> 
+            </CopyToClipboard>
+            {this.state.copied ? "Copied" : null}
+          </Typography> 
           </div>}
+        
+          
+
+        <div >
+          <Paper>
+            <Tabs value={value} onChange={this.handleChange}>
+              <Tab label="Quick Results" />
+              <Tab label="Individual Responses" />
+            </Tabs>
+          </Paper>
+
+          {value === 0 && 
+            <TabContainer>
+              {questionnaire.detail.questions && questionnaire.detail.questions.map((item) => {
+                return (
+                  <AccordianItem heading={`${item.question} ${item.correctAnswer ? ` (Answer: ${item.correctAnswer.toString()})` : ""}`}>
+                    {item.answersGiven ? processAnswers(item) : "No responses have been submitted." }
+                  </AccordianItem>
+                )
+              })}
+            </TabContainer>}
+          {value === 1 && 
+            <TabContainer>
+                {questionnaire.detail.responses && questionnaire.detail.responses.map((item)=>{
+                  return (
+
+                    <Card>
+                    <div>
+                      <CardContent>
+                        <Typography variant="h6">
+
+                        {(item.user) ? 
+                      <div>
+                        {`${item.user.firstName} ${item.user.lastName} - ${item.user.emailAddress}`}
+                      </div> :
+                      <div>
+                        Anonymous User
+                      </div>
+                      }
+                      
+                      {item.submitTime}
+                      <Link to={`/response/${this.props.match.params.id}/${item.responseId}`}>
+                        See Details
+                      </Link>
+                        </Typography>
+                      </CardContent>
+                    </div>
+                    {(item.user) &&
+                    <CardMedia
+                      image={item.user.imageUrl}
+                    />}
+                  </Card>
+                  )
+                })}
+            </TabContainer>}
+        </div>
 
         </DetailCard>
-        {questionnaire.detail.responses && questionnaire.detail.responses.map((item)=>{
-          return (
-
-            <Card>
-            <div>
-              <CardContent>
-                <Typography component="h5" variant="h5">
-
-                {(item.user) ? 
-              <div>
-                {item.user.emailAddress}
-                {item.user.firstName}
-                {item.user.lastName}
-              </div> :
-              <div>
-                Anonymous User
-              </div>
-              }
-              
-              {item.submitTime}
-              <Link to={`/response/${this.props.match.params.id}/${item.responseId}`}>
-                See Details
-              </Link>
-                </Typography>
-              </CardContent>
-            </div>
-            {(item.user) &&
-            <CardMedia
-              image={item.user.imageUrl}
-            />}
-          </Card>
-          )
-        })}
-          </div>
+      </div>
         }
       </div>
     </div>
@@ -135,6 +182,11 @@ const countAnswers = (data) => {
   }
 
   return (
+    <Grid container spacing={24}>    
+    <Grid item xs={12} sm={6}>
+    <Doughnut data= {prepareDataForVisualization(obj)} />
+    </Grid>
+    <Grid item xs={12} sm={6}>
     <Paper>
       <Table>
         <TableHead>
@@ -150,15 +202,43 @@ const countAnswers = (data) => {
                 <TableCell component="th" scope="row">
                   {key}
                 </TableCell>
-                <TableCell align="right">{obj[key]}</TableCell>
+                <TableCell align="right"> {obj[key]} </TableCell>
               </TableRow>
             )
           })
-        }
+        } 
         </TableBody>
       </Table>
     </Paper>
+    </Grid>
+    </Grid>
   )
+}
+
+const prepareDataForVisualization = (obj) =>{
+  console.log("its trying")
+  let displayObject = {};
+  let labels = [];
+  let datasets = [];  
+  let datasetObj = {};
+  let data = [];
+  let color = [];
+  Object.keys(obj).map((key)=> {
+    labels.push(key);
+    data.push(obj[key]);
+    color.push("#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}))
+  })
+  console.log(data);
+  console.log(color);
+  displayObject["labels"] = labels;
+  datasetObj["data"] = data;
+  datasetObj["backgroundColor"] = color;
+  datasetObj["hoverBackgroundColor"] = color;
+  datasets.push(datasetObj);
+
+  displayObject["datasets"] = datasets;
+  console.log(displayObject);
+  return displayObject;
 }
 
 const mapStateToProps = (state) => {
@@ -171,8 +251,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return({
     getDetail: (id) => {dispatch(getDetailsById(id))},
-    clear: (id) => {dispatch({type: CLEAR_QUESTIONNAIRES})}
-
   })
 }
 

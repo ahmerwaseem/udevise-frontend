@@ -67,7 +67,7 @@ ReactDOM.render(
  <MuiThemeProvider theme={theme}>
   <Router history={history}>
     <div className="index">
-        <Header/>
+        <MenuAppBar/>
         <div className="wrapper">
         <Switch>
           <ErrorBoundary>

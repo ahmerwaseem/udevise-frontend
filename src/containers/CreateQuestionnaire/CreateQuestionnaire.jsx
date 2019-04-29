@@ -12,11 +12,13 @@ import { required } from '../../utils/validators';
 import { CLEAR_CREATE_STATUS } from "../../actions/questionnaires";
 
 import { Container, Form, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
-import { Button, InputAdornment } from "@material-ui/core"
+import { Button, InputAdornment, Paper, Typography } from "@material-ui/core"
 import { getHost } from '../../utils/pathUtils';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import CheckBox from '../../components/CheckBox/CheckBox';
+import ArrowBack from '@material-ui/icons/ArrowBack'
+
 
 
 
@@ -113,7 +115,7 @@ Question = ({ question, index, fields, questionType, answersAllowed, type }) => 
       }}
     />
 
-    <Field name={`${question}.type`} component={SelectField} label="Type" selectvalues={questionTypeValues} validate={required} onClick={()=>this.props.change(`${question}.correctAnswer`,null)} />
+    <Field name={`${question}.type`} component={SelectField} label="Select Question Type" selectvalues={questionTypeValues} validate={required} onClick={()=>this.props.change(`${question}.correctAnswer`,null)} />
 
     {(questionType=="RADIO" || questionType=="SELECT" || questionType=="CHECKBOX") && (
       <div>
@@ -228,13 +230,17 @@ Question = connect(
     const { handleSubmit, pristine, reset, submitting, questionnaire, modal } = this.props;
     return (
       <div className="CreateQuestionnaire">
+
+      <Paper className="paper" raised>
+      <Button className="button" variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}><ArrowBack/></Button>   
+
         {questionnaire && questionnaire.createSuccess &&
             <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
               <ModalHeader>Create Success</ModalHeader>
               <ModalBody>
-                Here's where everyone can respond: {`${getHost()}/${this.props.type ? this.props.type.toLowerCase() : "survey"}/${questionnaire.id}`}
+                Here's a link to your {this.props.type.toLowerCase()}: {`${getHost()}/${this.props.type ? this.props.type.toLowerCase() : "survey"}/${questionnaire.id}`}
                 <div>Click OK to be redirected to your Dashboard</div>
-                <div>Click Cancel to create another {this.props.type}</div>
+                <div>Click Cancel to create another {this.props.type.toLowerCase()}</div>
               </ModalBody>
               <ModalFooter>
                 <Button color="primary" onClick={()=>{ this.props.clear(); this.props.history.push("/dashboard"); } }>OK</Button>{' '}
@@ -243,7 +249,7 @@ Question = connect(
             </Modal>
         }
 
-        <h3 className="Header">CREATE {this.props.type}</h3>
+        <Typography color="secondary" variant="h2" className="Header">CREATE {this.props.type}</Typography>
 
         <Button variant="contained" color="primary" onClick={()=>{
           this.props.initialize(sampleUpload)
@@ -305,6 +311,7 @@ Question = connect(
           </div>
 
         </Form>
+      </Paper>
       </div>
     )
   }

@@ -13,7 +13,7 @@ const defaultProps = {
 
 };
 
-let errorMsg = "An error has occurred."
+let errorMsg = "An error has occurred. Please try again later."
 
 
 class ErrorBoundary extends Component{
@@ -29,11 +29,25 @@ class ErrorBoundary extends Component{
   }
 
   render() {
+    const style = {
+      position: 'absolute',
+      display: 'flex',
+      justifyContent: 'center',
+      top: '40%',
+      bottom: 0,
+      left: 0,
+      right: 0,
+    }
+
     if (this.props.questionnaire && this.props.questionnaire.hasError) {
       if(this.props.questionnaire.errorMessage){
         errorMsg = this.props.questionnaire.errorMessage;
       }
-      return <h1>{errorMsg}</h1>
+      return (
+        <div style ={style}>         
+        <h1>{errorMsg}</h1>
+        </div>
+      )
     }
   
     return this.props.children;

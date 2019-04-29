@@ -3,8 +3,15 @@ import {
   GET_USER_SUBMITTED,
   getUserSubmittedPending,
   getUserSubmittedFailure,
-  getUserSubmittedSuccess
+  getUserSubmittedSuccess,
 } from "../actions/user";
+
+import {
+  ERROR_OCCURRED
+} from "../actions/questionnaires";
+
+import { getErrorMessage } from "../utils/errorHelper";
+
 
 import { takeEvery, call, put, select } from 'redux-saga/effects'
 import Axios from "axios";
@@ -18,6 +25,7 @@ function* getUserSubmissions() {
     yield put (getUserSubmittedSuccess(result.data))
   } catch (e) {
     yield put(getUserSubmittedFailure());
+    yield put ( { type: ERROR_OCCURRED , payload: getErrorMessage(e) });
   }
 }
 

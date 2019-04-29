@@ -13,7 +13,7 @@ import InputField from "../../components/InputField/InputField";
 import TextArea from '../../components/TextArea/TextArea';
 import uuid from "uuid";
 import { Container, Form, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { FormLabel, Button, Typography } from '@material-ui/core';
+import { FormLabel, Button, Typography, Paper } from '@material-ui/core';
 import { Redirect } from 'react-router-dom'
 
 
@@ -72,18 +72,18 @@ class AnswerQuestionnaire extends Component{
       const { title, description, questions } = this.props.questionnaire.questionnaire;
       return (
 
-        <Container>
+        <Paper className="AnswerQuestionnaire paper">
           <form onSubmit={this.props.handleSubmit(this.props.submitResponse)}>
           <div>
-          <h2>{title}</h2>
-          <h5>{description}</h5>
+          <Typography variant="h2" color="secondary">{title}</Typography>
+          <Typography variant="h5">{description}</Typography>
           {questions.map((item, index)=>{
             let fieldType = item.type.toLowerCase();
             let fieldName = `answers.[${index}].answer`;
             // special case to render radio buttons in reduxForm
             if (fieldType=="radio"){
               return(
-                <RadioButton selectvalues={item.answersAllowed} name={fieldName} label={item.question} converttoarray={true} /> 
+                <RadioButton selectvalues={item.answersAllowed} name={`${fieldName}-temp`} label={item.question} converttoarray={true} customDispatch={ (e)=> this.props.dispatch(change(formName,fieldName,e)) } /> 
               )    
             } else{
               return(<div>
@@ -94,7 +94,7 @@ class AnswerQuestionnaire extends Component{
         </div>          
           <Button variant="contained" color="primary" type="submit">Submit</Button>
           </form>
-          </Container>
+          </Paper>
           )
       } else if ( this.props.questionnaire && this.props.questionnaire.getQuestionnaireFailed ){
         return(<div>

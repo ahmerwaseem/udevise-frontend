@@ -4,6 +4,7 @@ import './QuestionnaireDetails.scss'
 import Spinner from '../Spinner/Spinner';
 import { Alert, Table } from 'reactstrap';
 import { getHost } from '../../utils/pathUtils';
+import {Doughnut} from 'react-chartjs-2';
 
 const propTypes = {
 
@@ -17,10 +18,14 @@ class QuestionnaireDetails extends Component{
   constructor(props) {
     super(props);
   }
+
   render(){
     if (this.props.location ){
       const { value }  = this.props.location.state.questionnaire;
   
+      let data = getQuestionnaireStats(value.questions);
+      console.log("what")
+
       return(
         <div>
           <h4>{`Name: ${value.title}`}</h4>
@@ -29,7 +34,7 @@ class QuestionnaireDetails extends Component{
           <h5>Direct Link: <a href={`${getHost()}/answer/${value.id}`}>Click Here</a></h5>
 
         <h5></h5>
-          {getQuestionnaireStats(value.questions)}
+          {getQuickResultsTable(data)}
         </div>
       )
     } else{
@@ -82,7 +87,13 @@ const countAnswers = (data) => {
     })
   }
 
+  return obj;
+}
+
+const getQuickResultsTable = (data) =>{
+  console.log("quick results table")
   return (
+    <div>
     <Table>
       <thead>
         <tr>
@@ -91,9 +102,13 @@ const countAnswers = (data) => {
         </tr>
       </thead>
       <tbody>
-        {getTableRows(obj)}
+        {getTableRows(data)}
       </tbody>
     </Table>
+
+
+    <Doughnut data={prepareDataForVisualizarion(data)} />
+    </div>
   )
 }
 
@@ -108,6 +123,30 @@ const getTableRows = (obj) => {
     )
   })
 }
+
+const prepareDataForVisualizarion = (obj) =>{
+  console.log("its trying")
+  let displayObject; 
+  let labels = [];
+  let datasets = [];  
+  let datasetObj = {};
+  let data = [];
+  let color = [];
+  Object.keys(obj).map((key)=> {
+    labels.push(key);
+    data.push(obj[key]);
+    color.push("#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}))
+  })
+  displayObject.labels = labels;
+  datasetObj.data = data;
+  datasetObj.backgroundColor = color;
+  datasetObj.hoverBackgroundColor = color;
+  datasets = datasets.push(datasetObj);
+
+  displayObject.datasets = datasets;
+  return displayObject;
+}
+
 
 QuestionnaireDetails.propTypes = propTypes;
 QuestionnaireDetails.defaultProps = defaultProps;

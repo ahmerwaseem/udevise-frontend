@@ -16,12 +16,8 @@ import history from "./history";
 import AnswerQuestionnaire from './containers/AnswerQuestionnaire/AnswerQuestionnaire'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { loadState, saveState } from './utils/localStorage';
-import Header from './components/Header/Header';
 import Dashboard from './containers/Dashboard/Dashboard';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
-import indigo from '@material-ui/core/colors/indigo';
-import pink from '@material-ui/core/colors/pink';
-import red from '@material-ui/core/colors/red';
 import MenuAppBar from './containers/MenuAppBar/MenuAppBar';
 import QuestionnaireDetails from './containers/QuestionnaireDetails/QuestionnaireDetails';
 import ResponseDetail from './containers/ResponseDetail/ResponseDetail';

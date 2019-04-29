@@ -57,7 +57,7 @@ class MenuAppBar extends React.Component {
         <div className={classes.root}>
           <AppBar position="static">
             <Toolbar>
-              <Typography variant="h6" color="inherit" className={classes.grow}>
+              <Typography variant="h6" color="inherit" className={classes.grow} onClick={()=>this.props.history.push("/")}>
                 UDEVISE
               </Typography>
               {(this.props.user && this.props.user.session)

@@ -101,11 +101,11 @@ class DetailCard extends Component{
               url={`${getHost()}/${type.toLowerCase()}/${id}`}
            ><FacebookIcon/></FacebookShareButton>
           
-            <Button size="large" color="primary" onClick={()=>{
+            <Button className="export-button" size="large" variant="contained" color="primary" onClick={()=>{
               getReport(id, getToken(this.props), "tsv", triggerDownload)
               }
             }>
-            Export (TSV)
+            Export
             </Button>
           </CardActions>
         </Card>

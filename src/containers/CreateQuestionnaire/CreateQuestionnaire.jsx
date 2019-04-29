@@ -231,9 +231,7 @@ Question = connect(
     return (
       <div className="CreateQuestionnaire">
 
-      <Paper className="paper" raised>
-      <Button className="button" variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}><ArrowBack/></Button>   
-
+      <Paper className="paper" raised={true}>
         {questionnaire && questionnaire.createSuccess &&
             <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
               <ModalHeader>Create Success</ModalHeader>
@@ -249,13 +247,13 @@ Question = connect(
             </Modal>
         }
 
-        <Typography color="secondary" variant="h2" className="Header">CREATE {this.props.type}</Typography>
+        <Typography color="secondary" variant="h2" className="createHeader">CREATE {this.props.type}</Typography>
 
-        <Button variant="contained" color="primary" onClick={()=>{
+        {/* <Button variant="contained" color="primary" onClick={()=>{
           this.props.initialize(sampleUpload)
         }}>
           Upload Via JSON
-          </Button>
+          </Button> */}
 
         <Button variant="contained" color="secondary" onClick={()=>{
           this.toggle();
@@ -304,10 +302,9 @@ Question = connect(
 
           <FieldArray name="questions" component={this.renderQuestions} />
 
-          <div className ="CreateQuestionnaireForm__submit">
-            <Button fullWidth type="submit" variant="contained" color="primary">
-              Submit
-            </Button>
+          <div className ="CreateQuestionnaireForm__submit buttonContainer">
+            <Button className="button" fullWidth variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}>Back</Button>   
+            <Button className="button" fullWidth type="submit" variant="contained" color="primary">Submit</Button>
           </div>
 
         </Form>

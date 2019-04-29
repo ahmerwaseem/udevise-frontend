@@ -31,14 +31,18 @@ const customRadio = (props) =>{
 
   return(
     <div className="radio">
-        <Radio        
-          {...input}
-          checked={input.checked}
-          type="radio"
-          onChange={()=>{input.onChange(input.value); customDispatch(input.value.split())}}
+          <FormControlLabel
+            value="top"
+            control={<Radio        
+              {...input}
+              checked={input.checked}
+              type="radio"
+              onChange={()=>{input.onChange(input.value); customDispatch(input.value.split())}}
+              />}
+            label={props.children}
+            labelPlacement="end"
           />
-        <label>{props.children}</label>
-    </div>
+        </div>
   )
 }
 

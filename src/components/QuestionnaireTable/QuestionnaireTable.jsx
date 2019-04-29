@@ -22,21 +22,11 @@ const propTypes = {
 };
 
 const defaultProps = {
-  itemsPerPage: 5
 };
 
 class QuestionnaireTable extends Component{
   constructor(props) {
     super(props);
-    let filteredData = this.props.data.filter(x=>x.type == this.props.type);
-    let initialData = filteredData.slice(0,this.props.itemsPerPage);
-
-    this.state = {
-      itemsPerPage: this.props.itemsPerPage,
-      rawData: filteredData,
-      data: initialData,
-      pageCount: Math.ceil(filteredData.length/this.props.itemsPerPage),
-    }
   }
 
 
@@ -65,25 +55,13 @@ class QuestionnaireTable extends Component{
       )
     })
     }
-
-    handlePageClick = data => {
-      let selected = data.selected;
-      let offset = Math.ceil(selected * this.state.itemsPerPage);
-      console.log(data, selected, offset, offset+this.state.itemsPerPage)
-  
-      this.setState({
-        data: this.state.rawData.slice(offset,offset+this.state.itemsPerPage)
-      });
-      console.log(this.state);
-    };
   
 
   render(){
-    console.log(this.state);
-    const { type } = this.props;
+    console.log(this.props);
+    const { type,data } = this.props;
     return(
     <div className="QuestionnaireTable">
-    <Paper className="paper">
       <div className="tableHeader">
       <Typography  className="tableTitle" variant="h2" color="secondary">
             {type}
@@ -104,23 +82,9 @@ class QuestionnaireTable extends Component{
       </TableRow>
     </TableHead>
     <TableBody>
-      {this.mapQuestionnaires(this.state.data,type)}
+      {this.mapQuestionnaires(data,type)}
     </TableBody>
     </Table>
-    </Paper>
-    <ReactPaginate
-          previousLabel={'previous'}
-          nextLabel={'next'}
-          breakLabel={'...'}
-          breakClassName={'break-me'}
-          pageCount={this.state.pageCount}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={this.handlePageClick}
-          containerClassName={'pagination'}
-          subContainerClassName={'pages pagination'}
-          activeClassName={'active'}
-        />
     </Paper>
   </div>
   )

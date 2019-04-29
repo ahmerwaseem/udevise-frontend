@@ -92,7 +92,7 @@ class AnswerQuestionnaire extends Component{
             }
           })}
         </div>          
-          <Button variant="contained" color="primary" type="submit">Submit</Button>
+          <Button fullWidth variant="contained" color="primary" type="submit">Submit</Button>
           </form>
           </Paper>
           )

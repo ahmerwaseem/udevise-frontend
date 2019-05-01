@@ -61,8 +61,18 @@ class AnswerQuestionnaire extends Component{
       if (this.props.questionnaire.questionnaire.type == "QUIZ"){
         return <Redirect to={`/response/${this.props.questionnaire.questionnaire.id}`} />
       } else{
+
+      const style = {
+      position: 'absolute',
+      display: 'flex',
+      justifyContent: 'center',
+      top: '40%',
+      bottom: 0,
+      left: 0,
+      right: 0,
+    }
       return (
-        <Typography>
+        <Typography variant="h2" style={style} color="secondary">
           Thank you for your response!
           </Typography>
       )

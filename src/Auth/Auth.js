@@ -27,7 +27,10 @@ export default class Auth {
 
   logout() {
     localStorage.removeItem('user');
-    this.redirect("/");
+    auth0_config.logout({
+      returnTo: AUTH_CONFIG.logOutCallback,
+      client_id: AUTH_CONFIG.clientId
+    });
   }
 
   redirect(redirectUri){

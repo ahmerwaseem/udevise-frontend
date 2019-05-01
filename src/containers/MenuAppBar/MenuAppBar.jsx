@@ -63,7 +63,7 @@ class MenuAppBar extends React.Component {
               {(this.props.user && this.props.user.session)
                  ? (
                 <div>
-                  Hi {this.props.user.session.idToken.name}
+                  Hi {this.props.user.session.idToken.nickname}
                   <IconButton
                     aria-owns={open ? 'menu-appbar' : undefined}
                     aria-haspopup="true"

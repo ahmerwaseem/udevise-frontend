@@ -35,13 +35,15 @@ class Dashboard extends Component{
 
   componentWillMount(){
     this.props.getQuestionnaireForUser();
+  }
+
+  componentDidMount(){
     this.props.getUserSubmissions();
   }
 
   render(){
 
     if (this.props.questionnaires && this.props.questionnaires.allQuestionnaires ){
-
       const {allQuestionnaires,} = this.props.questionnaires;
       const {submissions} = this.props.user;
       return(

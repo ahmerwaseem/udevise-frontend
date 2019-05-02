@@ -63,7 +63,7 @@ class QuestionnaireTable extends Component{
     return(
     <div className="QuestionnaireTable">
       <div className="tableHeader">
-      <Typography  className="tableTitle" variant="h2" color="secondary">
+      <Typography  className="tableTitle" variant="h3" color="secondary">
             {type}
       </Typography>
       < Link to={`create/${type.toLowerCase()}`}>

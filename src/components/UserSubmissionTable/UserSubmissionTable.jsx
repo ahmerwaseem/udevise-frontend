@@ -31,7 +31,7 @@ class UserSubmissionTable extends Component{
       <div className = "UserSubmissionTable"> 
         <Paper>
                     
-        <Typography variant="h2" color="secondary">
+        <Typography variant="h3" color="secondary">
           SUBMISSIONS
         </Typography>  
           <Table>

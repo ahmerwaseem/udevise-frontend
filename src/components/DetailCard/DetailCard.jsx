@@ -105,7 +105,7 @@ class DetailCard extends Component{
               getReport(id, getToken(this.props), "tsv", triggerDownload)
               }
             }>
-            Export
+            Export Responses
             </Button>
           </CardActions>
           <Button fullWidth className="button" variant="contained" color="secondary" onClick={()=>this.props.history.push("/dashboard")}>Back</Button>   

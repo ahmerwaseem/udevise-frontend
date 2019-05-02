@@ -32,7 +32,7 @@ function* getUserSubmissions() {
 
 function* saveUser(action) {
   try{
-    yield call(Axios.put,"/api/v1/user",action.payload); 
+    yield call(Axios.post,"/api/v1/user",action.payload); 
   } catch (e) {
     yield put ( { type: ERROR_OCCURRED , payload: getErrorMessage(e) });
   }

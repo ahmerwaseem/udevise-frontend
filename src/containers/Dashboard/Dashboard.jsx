@@ -35,9 +35,6 @@ class Dashboard extends Component{
 
   componentWillMount(){
     this.props.getQuestionnaireForUser();
-  }
-
-  componentDidMount(){
     this.props.getUserSubmissions();
   }
 

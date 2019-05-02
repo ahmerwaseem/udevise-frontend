@@ -4,6 +4,7 @@ import {
   getUserSubmittedPending,
   getUserSubmittedFailure,
   getUserSubmittedSuccess,
+  SAVE_USER,
 } from "../actions/user";
 
 import {
@@ -29,6 +30,15 @@ function* getUserSubmissions() {
   }
 }
 
+function* saveUser(action) {
+  try{
+    yield call(Axios.put,"/api/v1/user",action.payload); 
+  } catch (e) {
+    yield put ( { type: ERROR_OCCURRED , payload: getErrorMessage(e) });
+  }
+}
+
 export default function* userSaga(){
   yield takeEvery(GET_USER_SUBMITTED,getUserSubmissions)
+  yield takeEvery(SAVE_USER, saveUser);
 }

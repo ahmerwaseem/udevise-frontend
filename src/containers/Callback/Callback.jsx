@@ -5,7 +5,7 @@ import { auth0_config } from '../../Auth/Auth';
 import Auth from '../../Auth/Auth';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
-import { setUserSession } from '../../actions/user';
+import { setUserSession, SAVE_USER } from '../../actions/user';
 import { ERROR_OCCURRED } from '../../actions/questionnaires'; 
 
 class Callback extends Component {
@@ -22,6 +22,7 @@ class Callback extends Component {
       } else if (err) {
         this.props.setError(err.errorDescription)
       }
+
     });
   }
 
@@ -37,10 +38,11 @@ class Callback extends Component {
     }
     if (authResult.idTokenPayload){
       if(!authResult.idTokenPayload.email_verified){
-        this.props.setError("Please verify your email before logging in.")
+        this.props.setError("Please verify your email before trying to login.")
         return;
       }
     }
+    this.props.saveUser(authResult.idTokenPayload);
     this.props.setUser(userInfo);
     userInfo = {user : userInfo};
     localStorage.setItem("user",JSON.stringify(userInfo));
@@ -75,7 +77,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return({
       setUser: (userInfo) => {dispatch(setUserSession(userInfo))},
-      setError: (error) => {dispatch({type: ERROR_OCCURRED, payload: error})}
+      setError: (error) => {dispatch({type: ERROR_OCCURRED, payload: error})},
+      saveUser: (data) => {dispatch({type: SAVE_USER, payload: data})}
   })
 }
 

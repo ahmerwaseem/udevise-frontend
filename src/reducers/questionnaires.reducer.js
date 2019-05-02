@@ -80,7 +80,7 @@ export default function (state = null, action){
         createPending: false,
         createSuccess: true,
         id: action.payload.id,
-        allQuestionnaires: [...state.allQuestionnaires, action.payload]
+        allQuestionnaires: [action.payload, ...state.allQuestionnaires]
       })
     }
     case CLEAR_CREATE_STATUS: {

@@ -18,6 +18,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import CheckBox from '../../components/CheckBox/CheckBox';
 import ArrowBack from '@material-ui/icons/ArrowBack'
+import FileCopy from '@material-ui/icons/FileCopyTwoTone'
+
+
+
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 
 
@@ -92,6 +97,10 @@ class CreateQuestionnaire extends Component{
   constructor(props) {
     super(props);
     this.toggle=this.toggle.bind(this);
+    this.state = {
+      value: 0,
+      copied: false
+    };
 
   }
 
@@ -237,6 +246,11 @@ Question = connect(
               <ModalHeader>Create Success</ModalHeader>
               <ModalBody className="text-wrap">
                 Here's a link to your {this.props.type.toLowerCase()}: {`${getHost()}/${this.props.type ? this.props.type.toLowerCase() : "survey"}/${questionnaire.id}`}
+                <CopyToClipboard text={`${getHost()}/${this.props.type ? this.props.type.toLowerCase() : "survey"}/${questionnaire.id}`}
+          onCopy={() => this.setState({copied: true})}>
+                      <FileCopy color="primary" /> 
+            </CopyToClipboard>
+            {this.state.copied ? "Copied" : null}
                 <div>Click OK to be redirected to your Dashboard</div>
                 <div>Click Cancel to create another {this.props.type.toLowerCase()}</div>
               </ModalBody>

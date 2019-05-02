@@ -2,7 +2,7 @@
 @import '~bootstrap/scss/bootstrap';
 
 
-body {
+body { 
   height: 100vh;
   background-color: #d1d1d1;
   margin: 0;
@@ -41,6 +41,13 @@ button { @extend .btn; }
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.text-wrap{
+  white-space: pre-wrap;      /* CSS3 */   
+  white-space: -moz-pre-wrap; /* Firefox */   
+  white-space: -o-pre-wrap;   /* Opera 7 */    
+  word-wrap: break-word;
 }
 
 

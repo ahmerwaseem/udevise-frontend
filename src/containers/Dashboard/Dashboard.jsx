@@ -12,7 +12,6 @@ import { getHost } from '../../utils/pathUtils';
 import { AddCircle } from "@material-ui/icons"
 import {Divider, Button, Typography} from "@material-ui/core";
 import {Switch, Route, Link} from "react-router-dom";
-import QuestionnaireDetails from '../../components/QuestionnaireDetails/QuestionnaireDetails';
 import CreateQuestionnaire from '../CreateQuestionnaire/CreateQuestionnaire';
 import Fab from '@material-ui/core/Fab';
 import { withStyles } from '@material-ui/core/styles';

@@ -235,7 +235,7 @@ Question = connect(
         {questionnaire && questionnaire.createSuccess &&
             <Modal isOpen={questionnaire && questionnaire.createSuccess} toggle={this.toggle} className={this.props.className}>
               <ModalHeader>Create Success</ModalHeader>
-              <ModalBody>
+              <ModalBody className="text-wrap">
                 Here's a link to your {this.props.type.toLowerCase()}: {`${getHost()}/${this.props.type ? this.props.type.toLowerCase() : "survey"}/${questionnaire.id}`}
                 <div>Click OK to be redirected to your Dashboard</div>
                 <div>Click Cancel to create another {this.props.type.toLowerCase()}</div>

@@ -75,7 +75,7 @@ class QuestionnaireDetails extends Component{
         >
         {questionnaire.detail.questions && 
         <div>
-          <Typography color="textSecondary"> 
+          <Typography color="textSecondary" className="text-wrap"> 
             Direct Link: {`${getHost()}/${questionnaire.detail.type.toLowerCase()}/${questionnaire.detail.id}  `} 
             <CopyToClipboard text={`${getHost()}/${questionnaire.detail.type.toLowerCase()}/${questionnaire.detail.id}`}
           onCopy={() => this.setState({copied: true})}>

@@ -82,9 +82,9 @@ const sampleUpload = {
 const questionTypeValues = [
   {"option" : "TEXT","value" : "Short Answer"},
   {"option" : "TEXTAREA","value" : "Long Answer"},
-  {"option" : "RADIO","value" : "Radio - Pick One"},
-  {"option" : "SELECT","value" : "Dropdown - Select One"},
-  {"option" : "CHECKBOX","value" : "Multiple Answers"}
+  {"option" : "RADIO","value" : "Pick One"},
+  {"option" : "SELECT","value" : "Select One (Dropdown)"},
+  {"option" : "CHECKBOX","value" : "Multiple Answer"}
 ];
 
 let test = {
@@ -124,7 +124,7 @@ Question = ({ question, index, fields, questionType, answersAllowed, type }) => 
       }}
     />
 
-    <Field name={`${question}.type`} component={SelectField} label="Select Question Type" selectvalues={questionTypeValues} validate={required} onClick={()=>this.props.change(`${question}.correctAnswer`,null)} />
+    <Field name={`${question}.type`} component={SelectField} label="Select Answer Type" selectvalues={questionTypeValues} validate={required} onClick={()=>this.props.change(`${question}.correctAnswer`,null)} />
 
     {(questionType=="RADIO" || questionType=="SELECT" || questionType=="CHECKBOX") && (
       <div>

@@ -40,7 +40,7 @@ const CheckBox = ({ name, label, selectvalues, input, meta, ...custom}) => {
     <FormLabel component="legend">{label}</FormLabel>
       {$options}
       {meta.touched && meta.error && 
-        <div>
+        <div className="error error-text">
           {meta.error}
         </div>
       }

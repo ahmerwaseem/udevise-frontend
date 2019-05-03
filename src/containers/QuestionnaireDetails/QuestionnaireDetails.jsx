@@ -113,7 +113,7 @@ class QuestionnaireDetails extends Component{
                     <Card>
                     <div>
                       <CardContent>
-                        <Typography variant="h6">
+                        <Typography variant="body" color="text-secondary" className="user-detail">
 
                         {(item.user) ? 
                       <div>
@@ -123,11 +123,14 @@ class QuestionnaireDetails extends Component{
                         Anonymous User
                       </div>
                       }
-                      
-                      {item.submitTime}
+                      <div>
+                      Submit Time: {item.submitTime}
+                      </div>
+                      <div>
                       <Link to={`/response/${this.props.match.params.id}/${item.responseId}`}>
                         See Details
                       </Link>
+                      </div>
                         </Typography>
                       </CardContent>
                     </div>

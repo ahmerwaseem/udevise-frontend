@@ -50,6 +50,13 @@ button { @extend .btn; }
   word-wrap: break-word;
 }
 
+.error{
+  color: red;
+}
+
+.error-text{
+  font-size: 12px;
+}
 
 
 

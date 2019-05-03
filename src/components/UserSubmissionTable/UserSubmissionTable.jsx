@@ -32,7 +32,7 @@ class UserSubmissionTable extends Component{
         <Paper>
                     
         <Typography variant="h3" color="secondary">
-          SUBMISSIONS
+          QUIZZES TAKEN
         </Typography>  
           <Table>
             <TableHead color="primary">
